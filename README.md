@@ -22,7 +22,22 @@ A tool to generate codes based on templates.
 
 ## Concepts
 
-* Templates Directory Structure
+* Target Directory (where generated codes is placed)
+  
+  * If invoke command `template: New File / Folder From Template` via command panel:
+
+    * If there is active editor, target directory is the active editor's directory.
+
+    * Else, target directory is the workspace directory.
+
+  * If invoke command `template: New File / Folder From Template` via context menu:
+    
+    * If clicked item is a file, target directory is the file's directory.
+
+    * If clicked item is a directory, target directory is the directory.
+  
+
+* Templates Directory
 
   ```js
   + $HOME/.vscode/templates/
