@@ -1,9 +1,21 @@
 {
     "name": "code-template-tool",
-    "displayName": "code-template-tool",
+    "displayName": "Code Template Tool",
     "description": "Generate code based on the template",
-    "version": "0.0.1",
-    "publisher": "code-template-tool",
+    "icon": "images/icon.png",
+    "version": "0.1.0",
+    "publisher": "yuanhjty",
+    "license": "MIT",
+    "keywords": [
+        "file",
+        "folder",
+        "template",
+        "tool"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yuanhjty/code-template-tool.git"
+    },
     "engines": {
         "vscode": "^1.25.0"
     },
@@ -37,11 +49,27 @@
                 {
                     "command": "extension.newFile",
                     "group": "navigation"
+                },
+                {
+                    "command": "extension.editTemplates",
+                    "group": "navigation"
+                },
+                {
+                    "command": "extension.reloadTemplates",
+                    "group": "navigation"
                 }
             ],
             "editor/context": [
                 {
                     "command": "extension.newFile",
+                    "group": "navigation"
+                },
+                {
+                    "command": "extension.editTemplates",
+                    "group": "navigation"
+                },
+                {
+                    "command": "extension.reloadTemplates",
                     "group": "navigation"
                 }
             ]
@@ -49,8 +77,7 @@
         "configuration": {
             "type": "object",
             "title": "Code Template",
-            "properties": {
-            }
+            "properties": {}
         }
     },
     "scripts": {
@@ -64,7 +91,7 @@
         "typescript": "^2.6.1",
         "vscode": "^1.1.6",
         "tslint": "^5.8.0",
-        "@types/node": "^7.0.43",
+        "@types/node": "^8.9.0",
         "@types/mocha": "^2.2.42"
     }
 }
