@@ -81,12 +81,12 @@ A tool to generate codes based on templates.
 
     * variable in templates and result in generated codes
     
-      | variable in templates | result in generated codes |
-      | --------------------- | ------------------------- |
-      | `___fooBar___`        | useInfo                   |
-      | `___FooBar___`        | UserInfo                  |
-      | `___foo_bar___`       | user_info                 |
-      | `___foo-bar___`       | user-info                 |
+      | variable in templates | result in generated codes |  
+      | --------------------- | ------------------------- |  
+      | `___fooBar___`        | useInfo                   |  
+      | `___FooBar___`        | UserInfo                  |  
+      | `___foo_bar___`       | user_info                 |  
+      | `___foo-bar___`       | user-info                 |  
 
 * Template Config File
 
@@ -108,6 +108,7 @@ This extension contributes the following settings:
 
 * Template
 
+  ---
   ```js
   // template files
 
@@ -125,6 +126,7 @@ This extension contributes the following settings:
         | - ___PageName___Page.js
   ```
 
+  ---
   ```json
   // template.config.json
 
@@ -133,6 +135,7 @@ This extension contributes the following settings:
       "variables": ["utilName", "configName", "styleName", "pageName"],
   }
   ```
+  ---
 
   ```js
   // index.js
@@ -141,6 +144,7 @@ This extension contributes the following settings:
 
   export ___PageName___Page
   ```
+  ---
 
   ```js
   // ___pageName___Model.js
@@ -154,6 +158,7 @@ This extension contributes the following settings:
 
   export default ___pageName___Model
   ```
+  ---
 
   ```scss
   // ___pageName___Style.scss
@@ -162,6 +167,7 @@ This extension contributes the following settings:
     
   }
   ```
+  ---
 
   ```js
   // ___PageName___Page.js
@@ -189,6 +195,7 @@ This extension contributes the following settings:
       ___pageName___: state.___pageName___,
   }))(___PageName___Page)
   ```
+  ---
 
 * Template variables' value ( set by user )
 
@@ -201,6 +208,7 @@ This extension contributes the following settings:
   
 * Generated codes
 
+  ---
   ```js
   // generated files based on Demo Template
 
@@ -221,6 +229,7 @@ This extension contributes the following settings:
       | - myHomeStyle.scss
       | - MyHomePage.js
   ```
+  ---
 
   ```js
 
@@ -232,6 +241,7 @@ This extension contributes the following settings:
 
   export MyHomePage
   ```
+  ---
 
   ```js
   // ___pageName___ => myHome
@@ -247,6 +257,7 @@ This extension contributes the following settings:
 
   export default myHomeModel 
   ```
+  ---
 
   ```scss
   // ___pageName___ => myHome
@@ -257,6 +268,7 @@ This extension contributes the following settings:
 
   }
   ```
+  ---
 
   ```js
   // ___PageName___ => MyHome
@@ -288,6 +300,7 @@ This extension contributes the following settings:
       myHome: state.myHome,
   }))(MyHomePage)
   ```
+  ---
 
 ## Known Issues
 
