@@ -81,12 +81,12 @@ A tool to generate codes based on templates.
 
     * variable in templates and result in generated codes
     
-      variable in templates | result in generated codes
-      - | -
-      `___fooBar___` | useInfo
-      `___FooBar___` | UserInfo
-      `___foo_bar___` | user_info
-      `___foo-bar___` | user-info
+      | variable in templates | result in generated codes |
+      | --------------------- | ------------------------- |
+      | `___fooBar___`        | useInfo                   |
+      | `___FooBar___`        | UserInfo                  |
+      | `___foo_bar___`       | user_info                 |
+      | `___foo-bar___`       | user-info                 |
 
 * Template Config File
 
