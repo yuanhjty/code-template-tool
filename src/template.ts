@@ -11,11 +11,8 @@ export default class Template {
     private templatePaths: string[] = [];
     private variables: { [propName: string]: VariableConfig } | undefined;
     private defPath: string;
-    private configPath: string;
 
     public constructor(defPath: string) {
-        const configPath = path.resolve(defPath, `${templateConfigFileName}.json`);
-        this.configPath = configPath;
         this.defPath = defPath;
     }
 
@@ -49,7 +46,8 @@ export default class Template {
     }
 
     private async parseConfig() {
-        const configData = <string>await readFile(this.configPath, { encoding: 'utf8' });
+        const configPath = path.resolve(this.defPath, `${templateConfigFileName}.json`);
+        const configData = <string>await readFile(configPath, { encoding: 'utf8' });
         const configObj: {
             name: string;
             variables: (VariableConfig | string)[] | undefined;
@@ -121,7 +119,7 @@ export default class Template {
     }
 
     private async getVariablesValue(variables: string[]): Promise<VariablesValueObj> {
-        const variableMap = await variablesInputDialog(variables);
+        const variableMap = await variablesInputDialog(variables, this.name);
         if (!variableMap) {
             throw new CreationCanceledError();
         }

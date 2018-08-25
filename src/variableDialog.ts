@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
 
-function getContent(variables: string[]) {
+function getContent(variables: string[], templateName?: string) {
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Variables Setter</title>
+    <title>Set ${templateName ? templateName + ' ' : ''}Variables</title>
     <style>
         #code-template-variable-map {
             margin: 20px;
@@ -51,7 +51,7 @@ function getContent(variables: string[]) {
     </style>
 </head>
 <body>
-    <h2 class="code-template-title">Template Variables Setter</h2>
+    <h2 class="code-template-title">Set ${templateName ? templateName + ' ' : ''}Variables</h2>
     <form id="code-template-variable-map">
     </form>
 
@@ -124,15 +124,18 @@ export interface VariablesValueObj {
     [propName: string]: string;
 }
 
-export async function variablesInputDialog(variables: string[]): Promise<VariablesValueObj | null> {
+export async function variablesInputDialog(
+    variables: string[],
+    templateName?: string
+): Promise<VariablesValueObj | null> {
     return new Promise<VariablesValueObj | null>(resolve => {
         const panel = vscode.window.createWebviewPanel(
             'codeTemplateVariablesSetter',
-            'Variables Setter',
+            `${templateName ? templateName + ' ' : ''}Variables`,
             vscode.ViewColumn.Active,
             { enableScripts: true }
         );
-        panel.webview.html = getContent(variables);
+        panel.webview.html = getContent(variables, templateName);
         panel.webview.onDidReceiveMessage(message => {
             panel.dispose();
             if (message === 'cancel') {
