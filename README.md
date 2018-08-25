@@ -321,8 +321,14 @@ This extension contributes the following settings:
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
 ### 0.1.0
 
-Initial release
+Initial release.
+
+### 0.1.1
+
+Update docs.
+
+### 0.1.2
+
+Change variable setter's title.
