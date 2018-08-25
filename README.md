@@ -12,7 +12,7 @@ A tool to generate codes based on templates.
 
   * template: Reload Templates
 
-    The command `template: Reload Templates` must be executed to get templates updates.
+    When you updates your templates, the command `template: Reload Templates` must be invoked to get the updates.
 
   * template: New File / Folder From Template
 
@@ -24,13 +24,13 @@ A tool to generate codes based on templates.
 
 * Target Directory (where generated codes is placed)
   
-  * If invoke command `template: New File / Folder From Template` via command panel:
+  * If the command `template: New File / Folder From Template` is invoked via command panel:
 
     * If there is active editor, target directory is the active editor's directory.
 
     * Else, target directory is the workspace directory.
 
-  * If invoke command `template: New File / Folder From Template` via context menu:
+  * If the command `template: New File / Folder From Template` is invoked via context menu:
     
     * If clicked item is a file, target directory is the file's directory.
 
