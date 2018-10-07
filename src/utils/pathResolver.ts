@@ -32,7 +32,7 @@ export function resolveSelectedFolderPath(...thisArgs: any[]): string | null {
     return resolveFolderPath(selectedPath || '');
 }
 
-export function resolveTargetFolderPath(thisArgs: any): string | null {
+export function resolveDestFolderPath(thisArgs: any): string | null {
     return (
         resolveSelectedFolderPath(thisArgs) || resolveCurrentFolderPath() || resolveWorkspacePath()
     );

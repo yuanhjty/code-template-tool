@@ -65,13 +65,13 @@ function getContent(variables: string[], templateName?: string) {
             function handleSubmit(e) {
                 e.preventDefault();
                 const { target } = e;
-                const variableMap = {};
+                const variableValueMap = {};
 
                 variables.forEach((v) => {
-                    variableMap[v] = target[v].value;
+                    variableValueMap[v] = target[v].value;
                 });
 
-                vscode.postMessage(variableMap);
+                vscode.postMessage(variableValueMap);
             }
 
             function handleCancel(e) {
@@ -120,15 +120,15 @@ function getContent(variables: string[], templateName?: string) {
 </html>`;
 }
 
-export interface VariablesValueObj {
+export interface VariableValueTable {
     [propName: string]: string;
 }
 
-export async function variablesInputDialog(
+export async function variableInputter(
     variables: string[],
     templateName?: string
-): Promise<VariablesValueObj | null> {
-    return new Promise<VariablesValueObj | null>(resolve => {
+): Promise<VariableValueTable | null> {
+    return new Promise<VariableValueTable | null>(resolve => {
         const panel = vscode.window.createWebviewPanel(
             'codeTemplateVariablesSetter',
             `${templateName ? templateName + ' ' : ''}Variables`,
@@ -146,4 +146,4 @@ export async function variablesInputDialog(
     });
 }
 
-export default variablesInputDialog;
+export default variableInputter;

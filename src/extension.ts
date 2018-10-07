@@ -1,14 +1,14 @@
 'use strict';
 import * as vscode from 'vscode';
 import { handleError } from './utils/error';
-import { initTemplatesCache } from './templateCache';
-import newFileFromTemplate from './commands/newFileFromTemplate';
-import openTemplatesFolder from './commands/openTemplatesFolder';
-import refreshTemplatesCache from './commands/refreshTemplatesCache';
+import templateTable from './state/templateTable';
+import newFileFromTemplate from './controller/newFileFromTemplate';
+import openTemplatesFolder from './controller/openTemplatesFolder';
+import reloadTemplates from './controller/reloadTemplates';
 
 export async function activate(context: vscode.ExtensionContext) {
     try {
-        await initTemplatesCache();
+        await templateTable.init();
 
         const { subscriptions } = context;
         const { registerCommand } = vscode.commands;
@@ -16,7 +16,7 @@ export async function activate(context: vscode.ExtensionContext) {
         subscriptions.push(registerCommand('extension.newFile', newFileFromTemplate));
         subscriptions.push(registerCommand('extension.editTemplates', openTemplatesFolder));
         subscriptions.push(
-            registerCommand('extension.reloadTemplates', refreshTemplatesCache)
+            registerCommand('extension.reloadTemplates', reloadTemplates)
         );
     } catch (err) {
         handleError(err);

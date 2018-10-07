@@ -1,5 +1,13 @@
-import { words, lowerFirst, capitalize, isUpperCase, isLowerCase, isCapital } from './string';
-import { compose } from './function';
+import {
+    words,
+    lowerFirst,
+    capitalize,
+    isUpperCase,
+    isLowerCase,
+    isCapital,
+    duplicate,
+} from './string';
+import { VariableStyle } from '../state/variable';
 
 export const PASCALCASE = 'PASCALCASE';
 export const CAMELCASE = 'CAMELCASE';
@@ -8,24 +16,24 @@ export const HYPHENCASE = 'HYPHENCASE';
 export const AUTO = 'AUTO';
 export const UNKNOWN = 'UNKNOWN';
 
+function splitAndConvert(str: string): string[] {
+    const wordsArr = words(str);
+    return wordsArr.map(word => (isUpperCase(word) ? word : word.toLowerCase()));
+}
+
 export function toPascalCase(str: string): string {
-    return words(str)
-        .map(word => capitalize(word))
+    return splitAndConvert(str)
+        .map(word => isUpperCase(word) ? word : capitalize(word))
         .join('');
 }
 
 export function toCamelCase(str: string): string {
-    return compose(
-        lowerFirst,
-        toPascalCase
-    )(str);
-}
-
-function splitAndConvert(str: string): string[] {
-    const wordsArr = words(str);
-    return wordsArr.every(word => isUpperCase(word))
-        ? wordsArr.map(word => word.toUpperCase())
-        : wordsArr.map(word => word.toLowerCase());
+    const wordArr = splitAndConvert(str)
+        .map(word => isUpperCase(word) ? word : capitalize(word));
+    if (!isUpperCase(wordArr[0])) {
+        wordArr[0] = lowerFirst(wordArr[0]);
+    }
+    return wordArr.join('');
 }
 
 export function toSnakeCase(str: string): string {
@@ -36,7 +44,7 @@ export function toHyphenCase(str: string): string {
     return splitAndConvert(str).join('-');
 }
 
-export function checkIdentifierStyle(identifier: string): string {
+export function checkIdentifierCase(identifier: string): string {
     const wordArr = words(identifier);
 
     if (wordArr.length === 1 || wordArr.slice(1).every(w => isCapital(w))) {
@@ -54,7 +62,7 @@ export function checkIdentifierStyle(identifier: string): string {
             return HYPHENCASE;
         }
 
-        if (identifier.indexOf('_')) {
+        if (identifier.indexOf('_') !== -1) {
             return SNAKECASE;
         }
     }
@@ -62,30 +70,41 @@ export function checkIdentifierStyle(identifier: string): string {
     return UNKNOWN;
 }
 
-export function getIdentifierStyle(identifier: string, identifierStyle: string): string {
-    if (identifierStyle.toUpperCase() === AUTO) {
-        return checkIdentifierStyle(identifier);
+export function getIdentifierCase(identifier: string, identifierCase: string): string {
+    if (identifierCase.toUpperCase() === AUTO) {
+        return checkIdentifierCase(identifier);
     }
-    return identifierStyle.toUpperCase();
+    return identifierCase.toUpperCase();
 }
 
 export function convertCase(
     identifier: string,
-    identifierStyle: string,
-    template?: string,
+    identifierStyle: VariableStyle,
+    template?: string
 ): string {
-    const style = getIdentifierStyle(template || identifier, identifierStyle);
+    let convertedIdentifier = identifier;
 
-    switch (style) {
+    const identifierCase = getIdentifierCase(template || identifier, identifierStyle.case);
+    switch (identifierCase) {
         case CAMELCASE:
-            return toCamelCase(identifier);
+            convertedIdentifier = toCamelCase(identifier);
+            break;
         case PASCALCASE:
-            return toPascalCase(identifier);
+            convertedIdentifier = toPascalCase(identifier);
+            break;
         case SNAKECASE:
-            return toSnakeCase(identifier);
+            convertedIdentifier = toSnakeCase(identifier);
+            break;
         case HYPHENCASE:
-            return toHyphenCase(identifier);
+            convertedIdentifier = toHyphenCase(identifier);
+            break;
         default:
-            return identifier;
+            break;
     }
+
+    const { prefixUnderscore, suffixUnderscore } = identifierStyle;
+    const prefix = duplicate('_', prefixUnderscore);
+    const suffix = duplicate('_', suffixUnderscore);
+
+    return `${prefix}${convertedIdentifier}${suffix}`;
 }
