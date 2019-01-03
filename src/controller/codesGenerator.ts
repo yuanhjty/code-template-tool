@@ -22,6 +22,7 @@ export class CodesGenerator {
             const key = m.slice(3, -3);
             const variable = variableTable.get(toCamelCase(key));
             if (!variable || !variable.value || typeof variable.value !== 'string') {
+                if (variable && variable.style.default !== undefined) { return variable.style.default; }
                 return m;
             }
             return convertCase(variable.value, variable.style, key);

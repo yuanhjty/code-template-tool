@@ -3,12 +3,14 @@ export interface VariableConfig {
     case?: string;
     prefixUnderscore?: number;
     suffixUnderscore?: number;
+    default?: string;
 }
 
 export interface VariableStyle {
     case: string;
     prefixUnderscore: number;
     suffixUnderscore: number;
+    default: string | undefined;
 }
 
 export class Variable {
@@ -17,12 +19,13 @@ export class Variable {
     private _style: VariableStyle;
 
     public constructor(config: VariableConfig) {
-        const { name, case: styleCase, prefixUnderscore, suffixUnderscore } = config;
+        const { name, case: styleCase, prefixUnderscore, suffixUnderscore, default: def } = config;
         this._name = name;
         this._style = {
             case: styleCase || 'auto',
             prefixUnderscore: prefixUnderscore || 0,
             suffixUnderscore: suffixUnderscore || 0,
+            default: def,
         };
     }
 
