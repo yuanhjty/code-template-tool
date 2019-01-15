@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
+import IUserInputDTO from '../model/IUserInputDTO';
+import ITemplate from '../model/ITemplate';
 
-function getContent(variables: string[], templateName?: string) {
+function createView(variables: string[], templateName?: string) {
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,13 +67,13 @@ function getContent(variables: string[], templateName?: string) {
             function handleSubmit(e) {
                 e.preventDefault();
                 const { target } = e;
-                const variableValueMap = {};
+                const variableValues = {};
 
                 variables.forEach((v) => {
-                    variableValueMap[v] = target[v].value;
+                    variableValues[v] = target[v].value;
                 });
 
-                vscode.postMessage(variableValueMap);
+                vscode.postMessage({ variableValues });
             }
 
             function handleCancel(e) {
@@ -120,30 +122,22 @@ function getContent(variables: string[], templateName?: string) {
 </html>`;
 }
 
-export interface VariableValueTable {
-    [propName: string]: string;
-}
-
-export async function variableInputter(
-    variables: string[],
-    templateName?: string
-): Promise<VariableValueTable | null> {
-    return new Promise<VariableValueTable | null>(resolve => {
+export default async function getUserInput(template: ITemplate, destDir: string = ''): Promise<IUserInputDTO | undefined> {
+    const { variableTable: variableTable, name: templateName } = template;
+    return new Promise<IUserInputDTO>(resolve => {
         const panel = vscode.window.createWebviewPanel(
             'codeTemplateVariablesSetter',
             `${templateName ? templateName + ' ' : ''}Variables`,
             vscode.ViewColumn.Active,
             { enableScripts: true }
         );
-        panel.webview.html = getContent(variables, templateName);
+        panel.webview.html = createView(Array.from(variableTable.keys()), templateName);
         panel.webview.onDidReceiveMessage(message => {
             panel.dispose();
             if (message === 'cancel') {
-                resolve(null);
+                resolve(undefined);
             }
             resolve(message);
         });
     });
 }
-
-export default variableInputter;
