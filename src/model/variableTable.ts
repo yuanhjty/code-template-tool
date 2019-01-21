@@ -20,7 +20,7 @@ export default class VariableTable implements IVariableTable {
         return this.keys().map(key => this._variableTable[key]);
     }
 
-    public setVariableValues(variableValues: IVariableValuesDTO): void {
+    public assignVariables(variableValues: IVariableValuesDTO): void {
         Object.keys(variableValues).forEach((key: string) => {
             this._variableTable[key].value = variableValues[key];
         });

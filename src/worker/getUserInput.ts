@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import { window, ViewColumn } from 'vscode';
 import IUserInputDTO from '../model/IUserInputDTO';
 import ITemplate from '../model/ITemplate';
 
@@ -60,7 +60,8 @@ function createView(variables: string[], templateName?: string) {
     <script>
         (function() {
             const variablesStr = '${variables.join(' ')}';
-            const variables = variablesStr.split(' ');
+            console.log(variablesStr)
+            const variables = variablesStr ? variablesStr.split(' ') : [];
 
             const vscode = acquireVsCodeApi();
 
@@ -83,6 +84,7 @@ function createView(variables: string[], templateName?: string) {
 
             const formEl = document.getElementById('code-template-variable-map');
 
+            console.log(variables)
             variables.forEach((v) => {
                 const divEl = document.createElement('div');
                 const labelEl = document.createElement('label');
@@ -122,13 +124,13 @@ function createView(variables: string[], templateName?: string) {
 </html>`;
 }
 
-export default async function getUserInput(template: ITemplate, destDir: string = ''): Promise<IUserInputDTO | undefined> {
+export default function getUserInput(template: ITemplate, destDir: string = ''): Promise<IUserInputDTO | undefined> {
     const { variableTable: variableTable, name: templateName } = template;
-    return new Promise<IUserInputDTO>(resolve => {
-        const panel = vscode.window.createWebviewPanel(
+    return new Promise<IUserInputDTO | undefined>(resolve => {
+        const panel = window.createWebviewPanel(
             'codeTemplateVariablesSetter',
             `${templateName ? templateName + ' ' : ''}Variables`,
-            vscode.ViewColumn.Active,
+            ViewColumn.Active,
             { enableScripts: true }
         );
         panel.webview.html = createView(Array.from(variableTable.keys()), templateName);

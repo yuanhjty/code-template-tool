@@ -1,13 +1,17 @@
 'use strict';
-import * as vscode from 'vscode';
-import commands from './commands';
+import { ExtensionContext, commands } from 'vscode';
+import commandTable from './commands';
+import Worker from './worker/Worker';
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: ExtensionContext) {
+    const worker = Worker.getInstance();
+    await worker.init();
+
     const { subscriptions } = context;
-    const { registerCommand } = vscode.commands;
+    const { registerCommand } = commands;
 
-    Object.keys(commands).forEach(key => {
-        subscriptions.push(registerCommand(key, commands[key]));
+    Object.keys(commandTable).forEach(key => {
+        subscriptions.push(registerCommand(key, commandTable[key]));
     });
 }
 

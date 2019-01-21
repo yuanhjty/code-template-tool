@@ -1,8 +1,8 @@
-import * as path from 'path';
+import { resolve } from 'path';
 
 export class FileAlreadyExistsError extends Error {
     constructor(filePath: string) {
-        super(`InvalidPathError: EEXIST: ${path.resolve(filePath)}`);
+        super(`InvalidPathError: EEXIST: ${resolve(filePath)}`);
     }
 }
 

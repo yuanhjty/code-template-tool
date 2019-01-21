@@ -1,19 +1,19 @@
-import * as fs from 'fs';
+import { statSync } from 'fs';
 import { dirname, resolve } from 'path';
-import * as vscode from 'vscode';
+import { workspace, window } from 'vscode';
 
 function getDirPath(filePath: string | undefined): string | undefined {
     if (!filePath) {
         return undefined;
     }
 
-    const stats = fs.statSync(filePath);
+    const stats = statSync(filePath);
     const folderPath = stats.isDirectory() ? filePath : dirname(filePath);
     return resolve(folderPath);
 }
 
 function getWorkspacePath(): string | undefined {
-    const { workspaceFolders } = vscode.workspace;
+    const { workspaceFolders } = workspace;
     const workspaceFolder = workspaceFolders && workspaceFolders[0];
     if (!workspaceFolder) {
         return undefined;
@@ -22,7 +22,7 @@ function getWorkspacePath(): string | undefined {
 }
 
 function getCurrentDirPath(): string | undefined {
-    const activeEditor = vscode.window.activeTextEditor;
+    const activeEditor = window.activeTextEditor;
     const filePath = activeEditor && activeEditor.document.fileName;
     return getDirPath(filePath);
 }
@@ -41,5 +41,5 @@ export function getDestDirPath(...contextArgs: any[]): string | undefined{
 }
 
 export function isDirectory(path: string): boolean {
-    return fs.statSync(path).isDirectory();
+    return statSync(path).isDirectory();
 }

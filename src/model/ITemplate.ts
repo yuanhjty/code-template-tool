@@ -2,7 +2,8 @@ import IVariableTable from './IVariableTable';
 import IVariableValuesDTO from './IVariableValuesDTO';
 
 export default interface ITemplate {
-    setVariableValues(variableValues: IVariableValuesDTO): void;
+    assignVariables(variableValues: IVariableValuesDTO): void;
+    id: string;
     name: string;
     encoding: string;
     ignore: string[];

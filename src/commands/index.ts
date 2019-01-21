@@ -1,13 +1,13 @@
 import editTemplates from './editTemplates';
 import newFromTemplate from './newFromTemplate';
 
-interface Commands {
+interface CommandTable {
     [propName: string]: (...args: any[]) => void | Promise<void>;
 }
 
-const commands: Commands = {
+const commandTable: CommandTable = {
     'extension.newFromTemplate': newFromTemplate,
     'extension.editTemplates': editTemplates,
 };
 
-export default commands;
+export default commandTable;

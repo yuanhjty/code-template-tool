@@ -6,5 +6,5 @@ export default interface IVariableTable {
     set(key: string, value: IVariable): void;
     keys(): string[];
     values():IVariable[];
-    setVariableValues(variableValues: IVariableValuesDTO): void;
+    assignVariables(variableValues: IVariableValuesDTO): void;
 }

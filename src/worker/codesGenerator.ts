@@ -1,6 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import * as glob from 'glob';
+import { statSync, existsSync } from 'fs';
+import { resolve } from 'path';
 import { mkdir, readFile, writeFile } from '../utils/fs';
 import { convertIdentifierStyle } from '../utils/identifier';
 import { FileAlreadyExistsError } from '../utils/error';
@@ -26,20 +26,20 @@ export default class CodesGenerator {
 
         await Promise.all(
             srcBaseNames.map((srcBaseName: string) => {
-                const srcPath = path.resolve(template.rootPath, srcBaseName);
+                const srcPath = resolve(template.rootPath, srcBaseName);
                 const destBaseName = this.resolveVariable(srcBaseName, template.variableTable);
-                const destPath = path.resolve(this._destDirPath, destBaseName);
+                const destPath = resolve(this._destDirPath, destBaseName);
                 return this.generate(srcPath, destPath);
             })
         );
     }
 
     private async generate(srcPath: string, destPath: string) {
-        if (fs.existsSync(destPath)) {
+        if (existsSync(destPath)) {
             throw new FileAlreadyExistsError(destPath);
         }
 
-        if (fs.statSync(srcPath).isDirectory()) {
+        if (statSync(srcPath).isDirectory()) {
             await mkdir(destPath);
             const srcBaseNames = await this.globDir(srcPath);
             await Promise.all(
@@ -49,8 +49,8 @@ export default class CodesGenerator {
                         this._template.variableTable
                     );
                     return this.generate(
-                        path.resolve(srcPath, srcBaseName),
-                        path.resolve(destPath, destBaseName)
+                        resolve(srcPath, srcBaseName),
+                        resolve(destPath, destBaseName)
                     );
                 })
             );

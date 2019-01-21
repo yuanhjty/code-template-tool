@@ -1,72 +1,86 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { readFile } from '../utils/fs';
+import { readdirSync } from 'fs';
+import { normalize, resolve } from 'path';
 import { isDirectory } from '../utils/path';
-import { showErrMsg } from '../utils/message';
-import config from '../utils/config';
 import ITemplateTable from './ITemplateTable';
 import ITemplate from './ITemplate';
 import Template from './Template';
 
+let duplicateTemplateNameOrder = 0;
+
 export default class TemplateTable implements ITemplateTable {
-    public static async getInstance(templatesPath: string): Promise<TemplateTable> {
-        if (!this._instance || this._instance._templatesPath !== templatesPath) {
+    public static getInstance(templatesPath: string): ITemplateTable {
+        if (!this._instance) {
             this._instance = new TemplateTable(templatesPath);
-            try {
-                await this._instance.init();
-            } catch (error) {
-                this.unbindInstance();
-                throw error;
-            }
+
         }
         return this._instance;
     }
 
-    public static unbindInstance() {
+    public static freeInstance() {
         this._instance = null;
     }
 
+    public async init() {
+        try {
+            const templatesPath = this._templatesPath;
+            const templateDirs = readdirSync(templatesPath)
+                .map((dir: string) => normalize(resolve(templatesPath, dir)))
+                .filter((dir: string) => isDirectory(dir));
+
+            await Promise.all(
+                templateDirs.map(async (templateDir: string) => {
+                    const template = await Template.createTemplate(templateDir);
+                    if (template) {
+                        this.addTemplate(template);
+                    }
+                })
+            );
+        } catch (e) {
+            TemplateTable.freeInstance();
+            throw e;
+        }
+    }
+
     public getTemplateNames(): string[] {
-        return Array.from(this._templateTable.keys());
+        return Array.from(this._nameIdTable.keys());
     }
 
     public getTemplates(): ITemplate[] {
-        return Array.from(this._templateTable.values());
+        return Array.from(this._idTemplateTable.values());
     }
 
-    public getTemplate(name: string): ITemplate | undefined {
-        return this._templateTable.get(name);
+    public getTemplateByName(name: string): ITemplate | undefined {
+        return this.getTemplateById(this._nameIdTable.get(name) || '');
+    }
+
+    public getTemplateById(id: string): ITemplate | undefined {
+        return this._idTemplateTable.get(id);
+    }
+
+    public addTemplate(template: ITemplate): void {
+        const templateId = this._nameIdTable.get(template.name);
+        if (templateId && templateId !== template.id) {
+            template.name = `${template.name}.${++duplicateTemplateNameOrder}`;
+        }
+
+        this._idTemplateTable.set(template.id, template);
+        this._nameIdTable.set(template.name, template.id);
+    }
+
+    public deleteTemplate(templateId: string): void {
+        const template = this.getTemplateById(templateId);
+        if (template) {
+            this._nameIdTable.delete(template.name);
+            this._idTemplateTable.delete(template.id);
+        }
     }
 
     private constructor(templatesPath: string) {
         this._templatesPath = templatesPath;
     }
 
-    private async init() {
-        const templatesPath = this._templatesPath;
-        const templateDirs = fs
-            .readdirSync(templatesPath)
-            .map((dir: string) => path.resolve(templatesPath, dir))
-            .filter((dir: string) => isDirectory(dir));
-
-        await Promise.all(
-            templateDirs.map(async (templateDir: string) => {
-                const configPath = path.resolve(templateDir, config.configFile);
-                if (fs.existsSync(configPath)) {
-                    const configData = await readFile(configPath, { encoding: config.encoding });
-                    try {
-                        const configDTO = JSON.parse(configData);
-                        const template = new Template(templateDir, configDTO);
-                        this._templateTable.set(template.name, template);
-                    } catch (error) {
-                        showErrMsg(`${error.message}: ${configPath}`);
-                    }
-                }
-            })
-        );
-    }
-
     private static _instance: TemplateTable | null = null;
-    private _templateTable = new Map<string, ITemplate>();
+    private _idTemplateTable = new Map<string, ITemplate>();
+    private _nameIdTable = new Map<string, string>();
     private _templatesPath: string;
 }
