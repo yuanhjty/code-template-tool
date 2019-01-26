@@ -2,7 +2,7 @@
     "name": "code-template-tool",
     "displayName": "Code Template Tool",
     "description": "Generate code based on the template",
-    "icon": "images/icon.png",
+    "icon": "resource/img/icon.png",
     "version": "0.2.0",
     "publisher": "yuanhjty",
     "license": "MIT",
@@ -23,7 +23,9 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.newFromTemplate"
+        "onCommand:extension.newFromTemplate",
+        "onCommand:extension.editTemplates",
+        "onCommand:extension.reloadTemplates"
     ],
     "main": "./out/extension",
     "contributes": {
@@ -37,6 +39,11 @@
                 "command": "extension.editTemplates",
                 "title": "Edit Templates",
                 "category": "template"
+            },
+            {
+                "command": "extension.reloadTemplates",
+                "title": "Reload Templates",
+                "category": "template"
             }
         ],
         "menus": {
@@ -48,6 +55,10 @@
                 {
                     "command": "extension.editTemplates",
                     "group": "navigation"
+                },
+                {
+                    "command": "extension.reloadTemplates",
+                    "group": "navigation"
                 }
             ],
             "editor/context": [
@@ -57,6 +68,10 @@
                 },
                 {
                     "command": "extension.editTemplates",
+                    "group": "navigation"
+                },
+                {
+                    "command": "extension.reloadTemplates",
                     "group": "navigation"
                 }
             ]

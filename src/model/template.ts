@@ -2,14 +2,19 @@ import { resolve } from 'path';
 import { readFile } from '../utils/fs';
 import { showErrMsg } from '../utils/message';
 import config from '../utils/config';
-import ITemplateConfigDTO from './ITemplateConfigDTO';
-import IVariableConfigDTO from './IVariableConfigDTO';
-import IVariableValuesDTO from './IVariableValuesDTO';
-import IVariableTable from './IVariableTable';
-import ITemplate from './ITemplate';
+import {
+    ITemplate,
+    ITemplateConfigDTO,
+    IVariableConfigDTO,
+    IVariableTable,
+    IVariableValueDTO,
+} from './types';
 import Variable from './Variable';
 import VariableTable from './VariableTable';
 
+/**
+ * A template will be uniquely identified by it's `id` property.
+ */
 export default class Template implements ITemplate {
     public static async createTemplate(templatePath: string): Promise<ITemplate | null> {
         const configFilePath = resolve(templatePath, config.configFile);
@@ -33,6 +38,11 @@ export default class Template implements ITemplate {
         }
         const template = new Template(templatePath, configDTO);
         return template;
+    }
+
+    public reset(): void {
+        const initialVariables = this._initialVariableTable.variables();
+        this._variableTable.batchAssign(initialVariables);
     }
 
     public get id(): string {
@@ -63,8 +73,8 @@ export default class Template implements ITemplate {
         return this._variableTable;
     }
 
-    public assignVariables(variableValues: IVariableValuesDTO) {
-        this._variableTable.assignVariables(variableValues);
+    public assignVariables(variableValues: IVariableValueDTO[]) {
+        this._variableTable.batchAssign(variableValues);
     }
 
     private constructor(templatePath: string, configDTO: ITemplateConfigDTO) {
@@ -74,15 +84,18 @@ export default class Template implements ITemplate {
         this._encoding = configDTO.encoding || config.encoding;
         this._ignore = configDTO.ignore || [];
         this._variableTable = this.buildVariableTable(configDTO.variables || []);
+        this._initialVariableTable = this.buildVariableTable(configDTO.variables || []);
     }
 
     private buildVariableTable(variableConfigs: (string | IVariableConfigDTO)[]): IVariableTable {
         const variableTable = new VariableTable();
+
         variableConfigs.forEach(config => {
             const variableConfigDTO = typeof config === 'string' ? { name: config } : config;
             const variable = new Variable(variableConfigDTO);
-            variableTable.set(variable.name, variable);
+            variableTable.add(variable);
         });
+
         return variableTable;
     }
 
@@ -92,4 +105,5 @@ export default class Template implements ITemplate {
     private _encoding: string;
     private _ignore: string[];
     private _variableTable: IVariableTable;
+    private _initialVariableTable: IVariableTable;
 }

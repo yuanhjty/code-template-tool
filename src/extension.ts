@@ -5,7 +5,7 @@ import Worker from './worker/Worker';
 
 export async function activate(context: ExtensionContext) {
     const worker = Worker.getInstance();
-    await worker.init();
+    await worker.init(context);
 
     const { subscriptions } = context;
     const { registerCommand } = commands;

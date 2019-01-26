@@ -1,26 +1,23 @@
 import { duplicate } from '../utils/string';
 import { AUTO, toCamelCase } from '../utils/identifier';
-import IIdentifierStyleDTO from './IIdentifierStyleDTO';
-import IVariableConfigDTO from './IVariableConfigDTO';
-import IVariable from './IVariable';
+import { IVariable, IVariableConfigDTO, IIdentifierStyleDTO } from './types';
 
+/**
+ * A variable will be uniquely identified by it's `name` property.
+ */
 export default class Variable implements IVariable {
-    private _name: string;
-    private _value: string;
-    private _style: IIdentifierStyleDTO;
-
     public constructor(variableConfigDTO: IVariableConfigDTO) {
         const {
             name,
-            defaultValue = '',
+            defaultValue,
+            style,
             case: variableCase = AUTO,
             prefixUnderscore = 0,
             suffixUnderscore = 0,
-            style,
         } = variableConfigDTO;
         const { rawInput = false, case: styleCase = AUTO, prefix = '', suffix = '' } = style || {};
 
-        this._name = toCamelCase(name);
+        this._name = this.normalizeName(name);
         this._value = defaultValue;
         this._style = {
             rawInput,
@@ -38,11 +35,19 @@ export default class Variable implements IVariable {
         return this._style;
     }
 
-    public get value(): string {
+    public get value(): string | undefined {
         return this._value;
     }
 
-    public set value(v: string) {
-        this._value = v;
+    public set value(val: string | undefined) {
+        this._value = val;
     }
+
+    private normalizeName(name: string): string {
+        return toCamelCase(name);
+    }
+
+    private _name: string;
+    private _value: string | undefined;
+    private _style: IIdentifierStyleDTO;
 }

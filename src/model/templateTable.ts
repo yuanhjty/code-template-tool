@@ -1,8 +1,7 @@
 import { readdirSync } from 'fs';
 import { normalize, resolve } from 'path';
 import { isDirectory } from '../utils/path';
-import ITemplateTable from './ITemplateTable';
-import ITemplate from './ITemplate';
+import { ITemplate, ITemplateTable } from './types';
 import Template from './Template';
 
 let duplicateTemplateNameOrder = 0;
@@ -31,7 +30,7 @@ export default class TemplateTable implements ITemplateTable {
                 templateDirs.map(async (templateDir: string) => {
                     const template = await Template.createTemplate(templateDir);
                     if (template) {
-                        this.addTemplate(template);
+                        this.add(template);
                     }
                 })
             );
@@ -41,25 +40,23 @@ export default class TemplateTable implements ITemplateTable {
         }
     }
 
-    public getTemplateNames(): string[] {
-        return Array.from(this._nameIdTable.keys());
+    public getById(templateId: string): ITemplate | undefined {
+        return this._idTemplateTable.get(templateId);
     }
 
-    public getTemplates(): ITemplate[] {
-        return Array.from(this._idTemplateTable.values());
+    public getByName(templateName: string): ITemplate | undefined {
+        return this.getById(this._nameIdTable.get(templateName) || '');
     }
 
-    public getTemplateByName(name: string): ITemplate | undefined {
-        return this.getTemplateById(this._nameIdTable.get(name) || '');
-    }
-
-    public getTemplateById(id: string): ITemplate | undefined {
-        return this._idTemplateTable.get(id);
-    }
-
-    public addTemplate(template: ITemplate): void {
-        const templateId = this._nameIdTable.get(template.name);
-        if (templateId && templateId !== template.id) {
+    /**
+     * Add a template into the template table.
+     * If the template table already has the same template, cover it with the new one.
+     */
+    public add(template: ITemplate): void {
+        const existingTemplateId = this._nameIdTable.get(template.name);
+        if (existingTemplateId && existingTemplateId !== template.id) {
+            // If encountering duplicate template names when add a template into the template table,
+            // rename the new one by adding a number suffix to the duplicate name.
             template.name = `${template.name}.${++duplicateTemplateNameOrder}`;
         }
 
@@ -67,16 +64,29 @@ export default class TemplateTable implements ITemplateTable {
         this._nameIdTable.set(template.name, template.id);
     }
 
-    public deleteTemplate(templateId: string): void {
-        const template = this.getTemplateById(templateId);
-        if (template) {
-            this._nameIdTable.delete(template.name);
-            this._idTemplateTable.delete(template.id);
-        }
+    public deleteById(templateId: string): void {
+        const templateToDelete = this.getById(templateId);
+        this.delete(templateToDelete);
+    }
+
+    public deleteByName(templateName: string): void {
+        const templateToDelete = this.getByName(templateName);
+        this.delete(templateToDelete);
+    }
+
+    public entries(): ITemplate[] {
+        return Array.from(this._idTemplateTable.values());
     }
 
     private constructor(templatesPath: string) {
         this._templatesPath = templatesPath;
+    }
+
+    private delete(template: ITemplate | undefined): void {
+        if (template) {
+            this._nameIdTable.delete(template.name);
+            this._idTemplateTable.delete(template.id);
+        }
     }
 
     private static _instance: TemplateTable | null = null;

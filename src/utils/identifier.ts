@@ -1,5 +1,5 @@
 import { words, lowerFirst, capitalize, isUpperCase, isLowerCase, isCapital, trim } from './string';
-import IIdentifierStyleDTO from '../model/IIdentifierStyleDTO';
+import { IIdentifierStyleDTO } from '../model/types';
 
 export const PASCALCASE = 'PASCALCASE';
 export const CAMELCASE = 'CAMELCASE';

@@ -5,8 +5,7 @@ import { mkdir, readFile, writeFile } from '../utils/fs';
 import { convertIdentifierStyle } from '../utils/identifier';
 import { FileAlreadyExistsError } from '../utils/error';
 import config from '../utils/config';
-import ITemplate from '../model/ITemplate';
-import IVariableTable from '../model/IVariableTable';
+import { ITemplate, IVariableTable } from '../model/types';
 
 export default class CodesGenerator {
     private _template: ITemplate;

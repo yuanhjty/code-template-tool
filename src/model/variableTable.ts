@@ -1,34 +1,39 @@
 import { toCamelCase } from '../utils/identifier';
-import IVariable from './IVariable';
-import IVariableTable from './IVariableTable';
-import IVariableValuesDTO from './IVariableValuesDTO';
+import { IVariableTable, IVariableValueDTO, IVariable } from './types';
 
 export default class VariableTable implements IVariableTable {
-    public get(key: string): IVariable | undefined {
-        return this._variableTable[this.formatKey(key)];
+    public get(variableName: string): IVariable | undefined {
+        return this._table.get(this.normalizeName(variableName));
     }
 
-    public set(key: string, value: IVariable): void {
-        this._variableTable[this.formatKey(key)] = value;
+    /**
+     * Add a variable into the variable table.
+     * If the variable table already has the same variable, cover it with the new one.
+     */
+    public add(variable: IVariable): void {
+        this._table.set(this.normalizeName(variable.name), variable);
     }
 
-    public keys(): string[] {
-        return Object.keys(this._variableTable);
+    public delete(variableName: string): void {
+        this._table.delete(this.normalizeName(variableName));
     }
 
-    public values(): IVariable[] {
-        return this.keys().map(key => this._variableTable[key]);
+    public variables(): IVariable[] {
+        return Array.from(this._table.values());
     }
 
-    public assignVariables(variableValues: IVariableValuesDTO): void {
-        Object.keys(variableValues).forEach((key: string) => {
-            this._variableTable[key].value = variableValues[key];
+    public batchAssign(variableValues: IVariableValueDTO[]): void {
+        variableValues.forEach((item: IVariableValueDTO) => {
+            const variable = this.get(item.name);
+            if (variable) {
+                variable.value = item.value;
+            }
         });
     }
 
-    private formatKey(key: string): string {
-        return toCamelCase(key);
+    private normalizeName(variableName: string): string {
+        return toCamelCase(variableName);
     }
 
-    private _variableTable: { [key: string]: IVariable } = {};
+    private _table = new Map<string, IVariable>();
 }
