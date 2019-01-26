@@ -32,9 +32,18 @@ export interface IVariableDTO extends IVariableValueDTO {
     style: IIdentifierStyleDTO;
 }
 
-export interface IUserInputDTO {
+export interface IUserInputRequestDTO {
+    templateName: string;
     variables: IVariableDTO[];
-    destDirPath: string | undefined;
+    destDir: {
+        basePath: string;
+        relativePath: string;
+    };
+}
+
+export interface IUserInputResponseDTO {
+    variables: IVariableDTO[];
+    destDirAbsolutePath: string;
 }
 
 export interface IVariable extends IVariableDTO {}

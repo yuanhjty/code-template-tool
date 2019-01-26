@@ -1,0 +1,106 @@
+* {
+    box-sizing: border-box;
+}
+
+#user-input-root {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    padding: 20px 40px;
+    width: 80%;
+    min-width: 768px;
+    max-height: 100vh;
+    overflow: auto;
+}
+
+.user-input-header {
+    color: #333;
+    border-bottom: solid 1px #999;
+    padding-bottom: 16px;
+}
+
+.user-input-content {
+    font-size: 16px;
+    color: #666;
+}
+
+.user-input-content input {
+    font-size: 14px;
+    padding: 4px 8px;
+    border: none;
+}
+
+.user-input-content input::placeholder {
+    color: #ccc;
+}
+
+.user-input-panel {
+    margin-bottom: 12px;
+}
+
+.user-input-panel-title {
+    color: #333;
+}
+
+.user-input-panel-content {
+    background-color: #e8e8e8;
+    padding: 20px 20px;
+}
+
+.user-input-dest-dir,
+.user-input-variables {
+    display: inline-block;
+}
+
+.user-input-dest-dir-base,
+.user-input-dest-dir-relative {
+    width: 480px;
+}
+
+.user-input-dest-dir-item,
+.user-input-variable {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.user-input-dest-dir-item:not(:last-child),
+.user-input-variable:not(:last-child) {
+    margin-bottom: 16px;
+}
+
+.user-input-dest-dir-label,
+.user-input-variable-name {
+    margin-right: 12px;
+}
+
+.user-input-variable-value {
+    width: 300px;
+}
+
+.user-input-submit-btns {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.user-input-confirm-btn,
+.user-input-cancel-btn {
+    height: 36px;
+    line-height: 36px;
+    width: 100px;
+    text-align: center;
+    font-size: 14px;
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 20px;
+}
+
+.user-input-confirm-btn:hover,
+.user-input-cancel-btn:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}

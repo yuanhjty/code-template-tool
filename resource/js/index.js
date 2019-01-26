@@ -3,16 +3,22 @@
 
     top.templateUserInput = {
         data: {
+            templateName: '',
             variables: [],
             variableTable: new Map(),
-            destDirPath: undefined,
+            destDir: {
+                basePath: '',
+                relativePath: '',
+            },
         },
 
         handleConfirm() {
             const { variables, variableTable } = this.data;
 
-            const destDirInputEl = document.querySelector('.user-input-dest-dir-value');
-            const destDirPath = destDirInputEl.value;
+            const destDirBaseInputEl = document.querySelector('.user-input-dest-dir-base');
+            const destDirRelativeInputEl = document.querySelector('.user-input-dest-dir-relative');
+            const destDirBasePath = destDirBaseInputEl.value;
+            const destDirRelativePath = destDirRelativeInputEl.value;
 
             const variableInputEls = document.querySelectorAll('.user-input-variable-value');
             variableInputEls.forEach(el => {
@@ -26,7 +32,13 @@
                 }
             });
 
-            top.vscode.postMessage({ variables, destDirPath });
+            top.vscode.postMessage({
+                variables,
+                destDir: {
+                    basePath: destDirBasePath,
+                    relativePath: destDirRelativePath,
+                }
+            });
         },
 
         handleCancel() {
@@ -34,27 +46,44 @@
         },
 
         render() {
-            const { variables, destDirPath, variableTable } = this.data;
+            const { variables, destDir, variableTable, templateName } = this.data;
 
             const variablesHTML = (Array.isArray(variables) ? variables : [])
                 .map(
                     ({ name }) => `
                         <div class="user-input-variable">
-                            <label class="user-input-variable-name">${name}</label>
-                            <input class="user-input-variable-value" type="text" id=${name} />
+                            <label class="user-input-variable-name">${name}: </label>
+                            <input class="user-input-variable-value" type="text" id=${name} placeholder="please input" />
                         </div>`
                 )
                 .join('');
 
             const rootEl = document.getElementById('user-input-root');
             rootEl.innerHTML = `
+                <h1 class="user-input-header">${templateName}</h1>
                 <div class="user-input-content">
-                    <div class="user-input-dest-dir">
-                        <div class="user-input-dest-dir-label">Destination Directory Path</div>
-                        <input class="user-input-dest-dir-value" type="text" />
+                    <div class="user-input-panel">
+                        <h3 class="user-input-panel-title">Destination Directory</h3>
+                        <div class="user-input-panel-content">
+                            <div class="user-input-dest-dir">
+                                <div class="user-input-dest-dir-item">
+                                    <label class="user-input-dest-dir-label">Base(Workspace): </label>
+                                    <input class="user-input-dest-dir-base" type="text" placeholder="please input" />
+                                </div>
+                                <div class="user-input-dest-dir-item">
+                                    <label class="user-input-dest-dir-label">Relative: </label>
+                                    <input class="user-input-dest-dir-relative" type="text" placeholder="please input" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="user-input-variables">
-                        ${variablesHTML}
+                    <div class="user-input-panel">
+                        <h3 class="user-input-panel-title">Variables</h3>
+                        <div class="user-input-panel-content">
+                            <div class="user-input-variables">
+                                ${variablesHTML}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="user-input-submit-btns">
@@ -62,8 +91,10 @@
                     <div class="user-input-cancel-btn">Cancel</div>
                 </div>`;
 
-            const destDirInputEl = document.querySelector('.user-input-dest-dir-value');
-            destDirInputEl.value = destDirPath || '';
+            const destDirBaseInputEl = document.querySelector('.user-input-dest-dir-base');
+            const destDirRelativeInputEl = document.querySelector('.user-input-dest-dir-relative');
+            destDirBaseInputEl.value = destDir.basePath || '';
+            destDirRelativeInputEl.value = destDir.relativePath || '.';
 
             const variableInputEls = document.querySelectorAll('.user-input-variable-value');
             variableInputEls.forEach(el => {
@@ -77,9 +108,11 @@
         },
 
         start(userInputRequest) {
-            const { variables, destDirPath } = userInputRequest;
+            const { variables, destDir, templateName } = userInputRequest;
+
+            this.data.templateName = templateName;
             this.data.variables = variables || [];
-            this.data.destDirPath = destDirPath || '';
+            this.data.destDir = destDir;
             this.data.variables.forEach(variable => {
                 this.data.variableTable.set(variable.name, variable.value || '');
             });

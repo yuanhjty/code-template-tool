@@ -1,14 +1,9 @@
-import {
-    workspace,
-    ConfigurationChangeEvent,
-    Disposable,
-    ExtensionContext,
-} from 'vscode';
+import { workspace, ConfigurationChangeEvent, Disposable, ExtensionContext } from 'vscode';
 import { existsSync, mkdirSync } from 'fs';
 import { isDirectory } from '../utils/path';
 import { NotDirError } from '../utils/error';
 import config from '../utils/config';
-import { ITemplateTable } from '../model/types';
+import { ITemplateTable, IUserInputResponseDTO } from '../model/types';
 import TemplateTable from '../model/TemplateTable';
 import CodesGenerator from './CodesGenerator';
 import selectTemplate from './selectTemplate';
@@ -43,16 +38,20 @@ export default class Worker {
         }
 
         template.reset();
-        const userInput = await getUserInput(template, destDir, this.extensionContext);
-        if (!userInput) {
+        const userInputResponse: IUserInputResponseDTO | undefined = await getUserInput(
+            template,
+            destDir,
+            this.extensionContext
+        );
+        if (!userInputResponse) {
             return;
         }
 
-        const { variables } = userInput;
+        const { variables } = userInputResponse;
         if (variables) {
             template.assignVariables(variables);
         }
-        const destDirPath = userInput.destDirPath || destDir;
+        const destDirPath = userInputResponse.destDirAbsolutePath || destDir;
         const codesGenerator = new CodesGenerator(template, destDirPath);
         await codesGenerator.execute();
     }
@@ -88,7 +87,7 @@ export default class Worker {
             this.disposeTemplates();
             await this.initTemplates();
         }
-    }
+    };
 
     private get templateTable(): ITemplateTable {
         return <ITemplateTable>this._templateTable;

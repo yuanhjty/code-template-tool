@@ -1,6 +1,12 @@
 import { window, ViewColumn, ExtensionContext, Uri } from 'vscode';
-import { join } from 'path';
-import { IUserInputDTO, ITemplate } from '../model/types';
+import { join, relative } from 'path';
+import { getWorkspacePath } from '../utils/path';
+import {
+    IUserInputRequestDTO,
+    IUserInputResponseDTO,
+    ITemplate,
+    IVariableDTO,
+} from '../model/types';
 
 interface ResolveUri {
     (diskPath: string): Uri;
@@ -9,7 +15,11 @@ interface ResolveUri {
 const cssDiskPath = 'resource/css/index.css';
 const jsDiskPath = 'resource/js/index.js';
 
-function getWebviewContent(templateName: string, userInputJSON: string, resolveUri: ResolveUri) {
+function getWebviewContent(
+    templateName: string,
+    userInputRequest: IUserInputRequestDTO,
+    resolveUri: ResolveUri
+) {
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -20,14 +30,14 @@ function getWebviewContent(templateName: string, userInputJSON: string, resolveU
         <link rel="stylesheet" type="text/css" href=${resolveUri(cssDiskPath)}>
     </head>
     <body>
-        <div id="user-input-root">
-            <h1 class="user-input-header">${templateName}</h1>
-        </div>
+        <div id="user-input-root"></div>
         <script type="text/javascript" src=${resolveUri(jsDiskPath)}></script>
         <script>
             (function() {
                 const { templateUserInput } = top;
-                templateUserInput.start.bind(templateUserInput)(${userInputJSON});
+                templateUserInput.start.bind(templateUserInput)(${JSON.stringify(
+                    userInputRequest
+                )});
             })()
         </script>
     </body>
@@ -38,36 +48,47 @@ export default function getUserInput(
     template: ITemplate,
     destDir: string,
     extensionContext: ExtensionContext
-): Promise<IUserInputDTO | undefined> {
+): Promise<IUserInputResponseDTO | undefined> {
+    const workspacePath = getWorkspacePath();
+    const destDirRelativePath = relative(workspacePath, destDir);
+    const templateName = template.name;
+
     function resolveUri(diskPath: string): Uri {
         const diskUri = Uri.file(join(extensionContext.extensionPath, diskPath));
         return diskUri.with({ scheme: 'vscode-resource' });
     }
 
-    return new Promise<IUserInputDTO | undefined>(resolve => {
+    return new Promise<IUserInputResponseDTO | undefined>(resolve => {
         const panel = window.createWebviewPanel(
             'codeTemplateVariablesSetter',
-            template.name,
+            templateName,
             ViewColumn.Active,
             { enableScripts: true, retainContextWhenHidden: true }
         );
 
         const variables = template.variableTable.variables();
-        const userInputRequest: IUserInputDTO = {
+        const userInputRequest: IUserInputRequestDTO = {
+            templateName,
             variables: variables.map(({ name, style, value }) => ({ name, style, value })),
-            destDirPath: destDir,
+            destDir: {
+                basePath: workspacePath,
+                relativePath: destDirRelativePath,
+            },
         };
-        const userInputRequestJSON = JSON.stringify(userInputRequest);
-        panel.webview.html = getWebviewContent(
-            template.name,
-            userInputRequestJSON,
-            resolveUri
-        );
-        panel.webview.onDidReceiveMessage((userInputResponse: IUserInputDTO | 'cancel') => {
+        panel.webview.html = getWebviewContent(templateName, userInputRequest, resolveUri);
+        panel.webview.onDidReceiveMessage(response => {
             panel.dispose();
-            if (userInputResponse === 'cancel') {
+            if (response === 'cancel') {
                 resolve(undefined);
             } else {
+                const {
+                    variables,
+                    destDir: { basePath, relativePath },
+                } = response;
+                const userInputResponse: IUserInputResponseDTO = {
+                    variables: <IVariableDTO[]>variables,
+                    destDirAbsolutePath: join(basePath || '/', relativePath),
+                };
                 resolve(userInputResponse);
             }
         });

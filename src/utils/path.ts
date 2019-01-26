@@ -1,5 +1,6 @@
 import { statSync } from 'fs';
 import { dirname, resolve } from 'path';
+import { homedir } from 'os';
 import { workspace, window } from 'vscode';
 
 function getDirPath(filePath: string | undefined): string | undefined {
@@ -12,11 +13,11 @@ function getDirPath(filePath: string | undefined): string | undefined {
     return resolve(folderPath);
 }
 
-function getWorkspacePath(): string | undefined {
+export function getWorkspacePath(): string {
     const { workspaceFolders } = workspace;
     const workspaceFolder = workspaceFolders && workspaceFolders[0];
     if (!workspaceFolder) {
-        return undefined;
+        return homedir();
     }
     return workspaceFolder.uri.fsPath;
 }
@@ -32,7 +33,7 @@ function getSelectedDirPath(...contextArgs: any[]): string | undefined {
     return getDirPath(selectedPath);
 }
 
-export function getDestDirPath(...contextArgs: any[]): string | undefined{
+export function getDestDirPath(...contextArgs: any[]): string{
     return (
         getSelectedDirPath(...contextArgs) ||
         getCurrentDirPath() ||
