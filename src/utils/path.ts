@@ -3,7 +3,7 @@ import { dirname, resolve } from 'path';
 import { homedir } from 'os';
 import { workspace, window } from 'vscode';
 
-function getDirPath(filePath: string | undefined): string | undefined {
+function parseDirPath(filePath: string | undefined): string | undefined {
     if (!filePath) {
         return undefined;
     }
@@ -11,6 +11,17 @@ function getDirPath(filePath: string | undefined): string | undefined {
     const stats = statSync(filePath);
     const folderPath = stats.isDirectory() ? filePath : dirname(filePath);
     return resolve(folderPath);
+}
+
+function getCurrentDirPath(): string | undefined {
+    const activeEditor = window.activeTextEditor;
+    const filePath = activeEditor && activeEditor.document.fileName;
+    return parseDirPath(filePath);
+}
+
+function getSelectedDirPath(...contextArgs: any[]): string | undefined {
+    const selectedPath = contextArgs[0] && contextArgs[0].fsPath;
+    return parseDirPath(selectedPath);
 }
 
 export function getWorkspacePath(): string {
@@ -22,25 +33,10 @@ export function getWorkspacePath(): string {
     return workspaceFolder.uri.fsPath;
 }
 
-function getCurrentDirPath(): string | undefined {
-    const activeEditor = window.activeTextEditor;
-    const filePath = activeEditor && activeEditor.document.fileName;
-    return getDirPath(filePath);
-}
-
-function getSelectedDirPath(...contextArgs: any[]): string | undefined {
-    const selectedPath = contextArgs[0] && contextArgs[0].fsPath;
-    return getDirPath(selectedPath);
-}
-
 export function getDestDirPath(...contextArgs: any[]): string{
     return (
         getSelectedDirPath(...contextArgs) ||
         getCurrentDirPath() ||
         getWorkspacePath()
     );
-}
-
-export function isDirectory(path: string): boolean {
-    return statSync(path).isDirectory();
 }

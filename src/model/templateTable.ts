@@ -1,6 +1,6 @@
 import { readdirSync } from 'fs';
 import { normalize, resolve } from 'path';
-import { isDirectory } from '../utils/path';
+import { isDirectory } from '../utils/fs';
 import { ITemplate, ITemplateTable } from './types';
 import Template from './Template';
 

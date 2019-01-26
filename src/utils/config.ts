@@ -2,9 +2,11 @@ import { workspace } from 'vscode';
 import { resolve } from 'path';
 import { homedir } from 'os';
 
+const filesConfig = workspace.getConfiguration('files', null);
 const defaultTemplatesPath = resolve(homedir(), '.vscode/templates');
 const defaultConfigFile = 'template.config.json';
 const defaultIgnore: string[] = [];
+const defaultEncoding = filesConfig.get('encoding', 'utf8');
 
 const config = {
     getPluginConfiguration(field: string): any {
@@ -13,7 +15,7 @@ const config = {
 
     get templatesPath(): string {
         let templatesPath =
-            <string>(this.getPluginConfiguration('templatesPath')) || defaultTemplatesPath;
+            <string>this.getPluginConfiguration('templatesPath') || defaultTemplatesPath;
         if (templatesPath.slice(0, 2) === '~/') {
             templatesPath = resolve(homedir(), templatesPath.slice(2));
         }
@@ -21,21 +23,15 @@ const config = {
     },
 
     get ignore(): string[] {
-        return <string[]>(this.getPluginConfiguration('ignore')) || defaultIgnore;
+        return <string[]>this.getPluginConfiguration('ignore') || defaultIgnore;
     },
 
     get configFile(): string {
-        return (
-            <string>(this.getPluginConfiguration('templateConfigFileName')) || defaultConfigFile
-        );
+        return <string>this.getPluginConfiguration('templateConfigFileName') || defaultConfigFile;
     },
 
     get encoding(): string {
-        const filesConfig = workspace.getConfiguration('files', null);
-        return (
-            <string>(this.getPluginConfiguration('encoding')) ||
-            filesConfig.get('encoding', 'utf8')
-        );
+        return <string>this.getPluginConfiguration('encoding') || defaultEncoding;
     },
 };
 

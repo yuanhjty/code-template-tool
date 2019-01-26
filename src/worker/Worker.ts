@@ -1,6 +1,6 @@
 import { workspace, ConfigurationChangeEvent, Disposable, ExtensionContext } from 'vscode';
-import { existsSync, mkdirSync } from 'fs';
-import { isDirectory } from '../utils/path';
+import { existsSync } from 'fs';
+import { isDirectory, mkdirSyncP } from '../utils/fs';
 import { NotDirError } from '../utils/error';
 import config from '../utils/config';
 import { ITemplateTable, IUserInputResponseDTO } from '../model/types';
@@ -61,7 +61,7 @@ export default class Worker {
     private async initTemplates() {
         this._templatesPath = config.templatesPath;
         if (!existsSync(this._templatesPath)) {
-            mkdirSync(this._templatesPath);
+            mkdirSyncP(this._templatesPath);
         } else if (!isDirectory(this._templatesPath)) {
             throw new NotDirError(
                 '`codeTemplateTool.templatesPath` must be a directory, check your user settings.'
@@ -87,7 +87,7 @@ export default class Worker {
             this.disposeTemplates();
             await this.initTemplates();
         }
-    };
+    }
 
     private get templateTable(): ITemplateTable {
         return <ITemplateTable>this._templateTable;
