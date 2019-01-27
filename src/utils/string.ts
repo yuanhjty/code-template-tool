@@ -1,13 +1,13 @@
-export function isUpperCase(str: string, options = { number: false }): boolean {
-    return options.number ? /^[A-Z\d]+$/.test(str) : /^[A-Z]+$/.test(str);
+export function isUpperCase(str: string): boolean {
+    return /^[A-Z]+$/.test(str);
 }
 
-export function isLowerCase(str: string, options = { number: false }): boolean {
-    return options.number ? /^[a-z\d]+$/.test(str) : /^[a-z]+$/.test(str);
+export function isLowerCase(str: string): boolean {
+    return /^[a-z]+$/.test(str);
 }
 
 export function isCapital(str: string): boolean {
-    return isUpperCase(str[0]) && isLowerCase(str.slice(1), { number: true });
+    return isUpperCase(str[0]) && isLowerCase(str.slice(1));
 }
 
 export function upperFirst(str: string): string {
@@ -18,8 +18,24 @@ export function lowerFirst(str: string): string {
     return `${str[0].toLowerCase()}${str.slice(1)}`;
 }
 
+export function upper(str: string): string {
+    return str.toUpperCase();
+}
+
 export function capitalize(str: string): string {
     return upperFirst(str.toLowerCase());
+}
+
+export function lower(str: string): string {
+    return str.toLowerCase();
+}
+
+export function lowerIfNotUpperCase(str: string): string {
+    return isUpperCase(str) ? str : str.toLowerCase();
+}
+
+export function capitalizeIfNotUpperCase(str: string): string {
+    return isUpperCase(str) ? str : capitalize(str);
 }
 
 export function duplicate(str: string, n: number) {
@@ -54,7 +70,7 @@ export function trim(str: string, toTrim: string): string {
     return str.slice(prefixEndIndex, suffixStartIndex);
 }
 
-const rWord = /[a-z\d]+|[A-Z]\d*[a-z][a-z\d]*|[A-Z][A-Z\d]*(?=[A-Z]\d*[a-z][a-z\d]*|[^a-zA-Z\d]|$)/g;
+const wordPattern = /[a-z\d]+|[A-Z]\d*[a-z][a-z\d]*|[A-Z][A-Z\d]*(?=[A-Z]\d*[a-z][a-z\d]*|[^a-zA-Z\d]|$)/g;
 export function words(str: string): string[] {
-    return str.match(rWord) || [];
+    return str.match(wordPattern) || [];
 }
