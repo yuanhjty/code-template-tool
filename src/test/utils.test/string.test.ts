@@ -1,0 +1,146 @@
+import { assert } from 'chai';
+import {
+    isUpperCase,
+    isLowerCase,
+    isCapital,
+    upperFirst,
+    lowerFirst,
+    upper,
+    lower,
+    capitalize,
+    lowerIfNotUpperCase,
+    capitalizeIfNotUpperCase,
+    duplicate,
+    trim,
+    words,
+} from '../../utils/string';
+
+/* tslint:disable:no-unused-expression */
+
+describe('String Utils Tests', function() {
+    const testStrings = ['UPPERCASE', 'lowercase', 'Capital', 'string01'];
+
+    function testCaseChecker(
+        checker: typeof isUpperCase,
+        testCases: string[],
+        assertions: boolean[]
+    ) {
+        describe(checker.name, function() {
+            testCases.forEach((testCase: string, index: number) => {
+                it(`'${testCase}' should return ${assertions[index]}`, function() {
+                    assert.strictEqual(checker(testCase), assertions[index]);
+                });
+            });
+        });
+    }
+    testCaseChecker(isUpperCase, testStrings, [true, false, false, false]);
+    testCaseChecker(isLowerCase, testStrings, [false, true, false, true]);
+    testCaseChecker(isCapital, testStrings, [false, false, true, false]);
+
+    function testCaseConverter(
+        converter: typeof upperFirst,
+        testCases: string[],
+        assertions: string[]
+    ) {
+        describe(converter.name, function() {
+            testCases.forEach((testCase: string, index: number) => {
+                it(`${converter.name}('${testCases[index]}') should return '${
+                    assertions[index]
+                }'`, function() {
+                    assert.strictEqual(converter(testCase), assertions[index]);
+                });
+            });
+        });
+    }
+    testCaseConverter(upperFirst, testStrings, ['UPPERCASE', 'Lowercase', 'Capital', 'String01']);
+    testCaseConverter(lowerFirst, testStrings, ['uPPERCASE', 'lowercase', 'capital', 'string01']);
+    testCaseConverter(upper, testStrings, ['UPPERCASE', 'LOWERCASE', 'CAPITAL', 'STRING01']);
+    testCaseConverter(lower, testStrings, ['uppercase', 'lowercase', 'capital', 'string01']);
+    testCaseConverter(capitalize, testStrings, ['Uppercase', 'Lowercase', 'Capital', 'String01']);
+    testCaseConverter(lowerIfNotUpperCase, testStrings, [
+        'UPPERCASE',
+        'lowercase',
+        'capital',
+        'string01',
+    ]);
+    testCaseConverter(capitalizeIfNotUpperCase, testStrings, [
+        'UPPERCASE',
+        'Lowercase',
+        'Capital',
+        'String01',
+    ]);
+
+    describe(duplicate.name, function() {
+        const str = 'Duplicate';
+        const n = 3;
+        const result = 'DuplicateDuplicateDuplicate';
+        it(`${duplicate.name}('${str}', ${n}) should return '${result}'`, function() {
+            assert.strictEqual(duplicate(str, n), result);
+        });
+    });
+
+    describe(trim.name, function() {
+        const baseString = 'baseString';
+        const affix0 = ' ';
+        const affix1 = '-';
+        const affix2 = '[affix]';
+        function getTestString(
+            affix: string,
+            nPrefix: number,
+            nSuffix: number,
+            base: string = baseString
+        ) {
+            return `${duplicate(affix, nPrefix)}${base}${duplicate(affix, nSuffix)}`;
+        }
+        const testCases = [
+            [getTestString(affix0, 2, 0), affix0],
+            [getTestString(affix0, 0, 1), affix0],
+            [getTestString(affix0, 3, 2), affix0],
+            [getTestString(affix1, 1, 0), affix1],
+            [getTestString(affix1, 0, 3), affix1],
+            [getTestString(affix1, 1, 1), affix1],
+            [getTestString(affix2, 2, 0), affix2],
+            [getTestString(affix2, 0, 3), affix2],
+            [getTestString(affix2, 2, 2), affix2],
+        ];
+
+        testCases.forEach((item: string[]) => {
+            it(`${trim.name}('${item[0]}', '${item[1]}') should return '${baseString}'`, function() {
+                assert.strictEqual(trim(item[0], item[1]), baseString);
+            });
+        });
+    });
+
+    describe(words.name, function() {
+        const testCases = [
+            ['lowercase', ['lowercase']],
+            ['UPPERCASE', ['UPPERCASE']],
+            ['camelCaseIdentifier', ['camel', 'Case', 'Identifier']],
+            ['PascalCaseIdentifier', ['Pascal', 'Case', 'Identifier']],
+            ['PASCALCaseIdentifier', ['PASCAL', 'Case', 'Identifier']],
+            ['camelCASEIdentifier', ['camel', 'CASE', 'Identifier']],
+            ['camelCaseIDENTIFIER', ['camel', 'Case', 'IDENTIFIER']],
+
+            ['camel8Case88Identifier8', ['camel8', 'Case88', 'Identifier8']],
+            ['c88amelCa88seIde88ntifier', ['c88amel', 'Ca88se', 'Ide88ntifier']],
+            ['888camelCaseIdentifier', ['888camel', 'Case', 'Identifier']],
+            ['PA88SCALCaseID88ENTIFIER', ['PA88SCAL', 'Case', 'ID88ENTIFIER']],
+            ['PASCAL88CaseIDENTIFIER88', ['PASCAL88', 'Case', 'IDENTIFIER88']],
+            ['camelC88ASEIdentifier', ['camel', 'C88ASE', 'Identifier']],
+            ['camelCASE88Identifier', ['camel', 'CASE88', 'Identifier']],
+
+            ['  space space space ', ['space', 'space', 'space']],
+            ['_underscore-hyphen space ', ['underscore', 'hyphen', 'space']],
+            ['_Underscore-HYPHEN Space ', ['Underscore', 'HYPHEN', 'Space']],
+            ['hyphen-underscore_space ', ['hyphen', 'underscore', 'space']],
+        ];
+
+        testCases.forEach((item: (string | string[])[]) => {
+            const input = <string>item[0];
+            const output = <string[]>item[1];
+            it(`${words.name}('${input}') should return ${JSON.stringify(output)}`, function() {
+                assert.deepStrictEqual(words(input), output);
+            });
+        });
+    });
+});

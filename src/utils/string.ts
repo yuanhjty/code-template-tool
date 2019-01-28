@@ -1,9 +1,9 @@
 export function isUpperCase(str: string): boolean {
-    return /^[A-Z]+$/.test(str);
+    return /^[A-Z\d]+$/.test(str);
 }
 
 export function isLowerCase(str: string): boolean {
-    return /^[a-z]+$/.test(str);
+    return /^[a-z\d]+$/.test(str);
 }
 
 export function isCapital(str: string): boolean {

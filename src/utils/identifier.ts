@@ -36,20 +36,23 @@ export const UNKNOWN = 'UNKNOWN';
 // ---- Identifier case enums
 
 type TSep = '_' | '-' | '';
+type TMapCbl = ((value: string, index: number) => string) | ((value: string) => string);
 
 const snakeSep = '_';
 const kebabSep = '-';
 const emptySep = '';
 
 // Identifier converters ----
-function convertCase(
-    str: string,
-    sep: TSep,
-    wordConverter: ((value: string, index: number) => string) | ((value: string) => string)
-): string {
-    return words(str)
-        .map(wordConverter)
-        .join(sep);
+function convertCase(str: string, sep: TSep, wordConverter: TMapCbl): string {
+    return words(str).map(wordConverter).join(sep);
+}
+
+export function toLowerCase(str: string): string {
+    return convertCase(str, emptySep, lowerIfNotUpperCase);
+}
+
+export function toUpperCase(str: string): string {
+    return convertCase(str, emptySep, upper);
 }
 
 export function toPascalCase(str: string): string {
@@ -135,8 +138,15 @@ export function checkIdentifierCase(identifier: string): string {
     const isSnakeJoined = trimmedIdentifier.includes(snakeSep);
     const isKebabJoined = trimmedIdentifier.includes(kebabSep);
 
+    if (isSnakeJoined && isKebabJoined) {
+        return UNKNOWN;
+    }
+
     switch (true) {
         case isCamelCaseList(wordList):
+            if (isSnakeJoined || isKebabJoined) {
+                return UNKNOWN;
+            }
             if (wordList.length === 1) {
                 return LOWER_CASE;
             }
@@ -173,8 +183,8 @@ export function checkIdentifierCase(identifier: string): string {
 
 // Identifier case and style converter ----
 const identifierConverterTable: { [propName: string]: TPipeFunction<string> } = {
-    [LOWER_CASE]: lower,
-    [UPPER_CASE]: upper,
+    [LOWER_CASE]: toLowerCase,
+    [UPPER_CASE]: toUpperCase,
     [CAMEL_CASE]: toCamelCase,
     [PASCAL_CASE]: toPascalCase,
     [SNAKE_CASE]: toSnakeCase,
@@ -193,7 +203,7 @@ const identifierConverterTable: { [propName: string]: TPipeFunction<string> } = 
     [UNKNOWN]: (arg: string) => arg,
 };
 
-function convertIdentifierCase(identifier: string, identifierCase: string): string {
+export function convertIdentifierCase(identifier: string, identifierCase: string): string {
     return identifierConverterTable[identifierCase](identifier);
 }
 
