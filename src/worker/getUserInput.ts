@@ -1,5 +1,5 @@
 import { window, ViewColumn, ExtensionContext, Uri } from 'vscode';
-import { join, relative } from 'path';
+import { relative, resolve as resolvePath } from 'path';
 import { getWorkspacePath } from '../utils/path';
 import {
     IUserInputRequestDTO,
@@ -54,7 +54,7 @@ export default function getUserInput(
     const templateName = template.name;
 
     function resolveUri(diskPath: string): Uri {
-        const diskUri = Uri.file(join(extensionContext.extensionPath, diskPath));
+        const diskUri = Uri.file(resolvePath(extensionContext.extensionPath, diskPath));
         return diskUri.with({ scheme: 'vscode-resource' });
     }
 
@@ -87,7 +87,7 @@ export default function getUserInput(
                 } = response;
                 const userInputResponse: IUserInputResponseDTO = {
                     variables: <IVariableDTO[]>variables,
-                    destDirAbsolutePath: join(basePath || '/', relativePath),
+                    destDirAbsolutePath: resolvePath(basePath || '/', relativePath),
                 };
                 resolve(userInputResponse);
             }

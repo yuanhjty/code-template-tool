@@ -94,7 +94,7 @@
             const destDirBaseInputEl = document.querySelector('.user-input-dest-dir-base');
             const destDirRelativeInputEl = document.querySelector('.user-input-dest-dir-relative');
             destDirBaseInputEl.value = destDir.basePath || '';
-            destDirRelativeInputEl.value = destDir.relativePath || '.';
+            destDirRelativeInputEl.value = destDir.relativePath || './';
 
             const variableInputEls = document.querySelectorAll('.user-input-variable-value');
             variableInputEls.forEach(el => {
