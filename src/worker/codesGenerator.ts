@@ -1,7 +1,7 @@
 import * as glob from 'glob';
 import { statSync, existsSync } from 'fs';
 import { resolve } from 'path';
-import { mkdir, readFile, writeFile } from '../utils/fs';
+import { mkdirp, readFile, writeFileP } from '../utils/fs';
 import { convertIdentifierStyle } from '../utils/identifier';
 import { FileAlreadyExistsError } from '../utils/error';
 import config from '../utils/config';
@@ -39,7 +39,7 @@ export default class CodesGenerator {
         }
 
         if (statSync(srcPath).isDirectory()) {
-            await mkdir(destPath);
+            await mkdirp(destPath);
             const srcBaseNames = await this.globDir(srcPath);
             await Promise.all(
                 srcBaseNames.map((srcBaseName: string) => {
@@ -62,7 +62,7 @@ export default class CodesGenerator {
         const encoding = config.encoding;
         const content = <string>await readFile(srcPath, { encoding });
         const resolvedContent = this.resolveVariable(content, this._template.variableTable);
-        await writeFile(destPath, resolvedContent, encoding);
+        await writeFileP(destPath, resolvedContent, encoding);
     }
 
     private async globDir(dir: string): Promise<string[]> {

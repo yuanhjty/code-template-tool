@@ -6,7 +6,6 @@ import {
     trim,
     lowerIfNotUpperCase,
     capitalizeIfNotUpperCase,
-    lower,
     upper,
 } from './string';
 import { pipe, flipCurry, TPipeFunction } from './function';

@@ -24,7 +24,7 @@ export function isDirectory(path: string): boolean {
     return fs.statSync(path).isDirectory();
 }
 
-export function mkdirSyncP(destPath: string, mode?: string): void {
+export async function mkdirp(destPath: string, ...args: any[]): Promise<void> {
     let argPath = destPath;
     let dirPath = '';
     if (path.isAbsolute(destPath)) {
@@ -45,10 +45,18 @@ export function mkdirSyncP(destPath: string, mode?: string): void {
         pathSegments.pop();
     }
 
-    pathSegments.forEach((segment: string) => {
-        dirPath = path.join(dirPath, segment);
+    for (let i = 0; i < pathSegments.length; i++) {
+        dirPath = path.join(dirPath, pathSegments[i]);
         if (!fs.existsSync(dirPath)) {
-            fs.mkdirSync(dirPath, mode);
+            await mkdir(dirPath, ...args);
         }
-    });
+    }
+}
+
+export async function writeFileP(filePath: string, data: string, ...args: any[]): Promise<void> {
+    const fileDir = path.dirname(filePath);
+    if (!fs.existsSync(fileDir)) {
+        await mkdirp(fileDir);
+    }
+    await writeFile(filePath, data, ...args);
 }
