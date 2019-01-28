@@ -5,12 +5,16 @@ import { workspace, window } from 'vscode';
 
 function parseDirPath(filePath: string | undefined): string | undefined {
     if (!filePath) {
-        return undefined;
+        return;
     }
 
-    const stats = statSync(filePath);
-    const folderPath = stats.isDirectory() ? filePath : dirname(filePath);
-    return resolve(folderPath);
+    try {
+        const stats = statSync(filePath);
+        const folderPath = stats.isDirectory() ? filePath : dirname(filePath);
+        return resolve(folderPath);
+    } catch(e) {
+        return;
+    }
 }
 
 function getCurrentDirPath(): string | undefined {
