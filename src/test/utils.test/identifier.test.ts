@@ -1,5 +1,4 @@
 import { assert } from 'chai';
-import { IIdentifierStyleDTO } from '../../model/types';
 import {
     toLowerCase,
     toUpperCase,
