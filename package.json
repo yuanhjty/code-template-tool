@@ -97,6 +97,14 @@
                     "default": [
                         ".DS_Store"
                     ]
+                },
+                "codeTemplateTool.variable.noTransformation": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "codeTemplateTool.variable.keepUpperCase": {
+                    "type": "boolean",
+                    "default": false
                 }
             }
         }

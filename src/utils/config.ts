@@ -23,16 +23,24 @@ const config = {
     },
 
     get ignore(): string[] {
-        return <string[]>this.getPluginConfiguration('ignore') || defaultIgnore;
+        return this.getPluginConfiguration('ignore') || defaultIgnore;
     },
 
     get configFile(): string {
-        return <string>this.getPluginConfiguration('templateConfigFileName') || defaultConfigFile;
+        return this.getPluginConfiguration('templateConfigFileName') || defaultConfigFile;
     },
 
     get encoding(): string {
-        return <string>this.getPluginConfiguration('encoding') || defaultEncoding;
+        return this.getPluginConfiguration('encoding') || defaultEncoding;
     },
+
+    get variableNoTransformation(): boolean {
+        return this.getPluginConfiguration('variable.noTransformation');
+    },
+
+    get variableKeepUpperCase(): boolean {
+        return this.getPluginConfiguration('variable.keepUpperCase');
+    }
 };
 
 export default config;

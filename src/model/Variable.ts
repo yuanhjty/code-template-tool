@@ -1,3 +1,4 @@
+import config from '../utils/config';
 import { duplicate } from '../utils/string';
 import { AUTO, toCamelCase } from '../utils/identifier';
 import { IVariable, IVariableConfigDTO, IIdentifierStyleDTO } from './types';
@@ -21,8 +22,8 @@ export default class Variable implements IVariable {
         this._name = this.normalizeName(name);
         this._value = defaultValue;
         this._style = {
-            noTransformation,
-            keepUpperCase,
+            noTransformation: noTransformation || config.variableNoTransformation,
+            keepUpperCase: keepUpperCase || config.variableKeepUpperCase,
             case: styleCase || variableCase,
             prefix: prefix || duplicate('_', prefixUnderscore),
             suffix: suffix || duplicate('_', suffixUnderscore),
