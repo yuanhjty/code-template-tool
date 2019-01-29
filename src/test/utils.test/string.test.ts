@@ -2,14 +2,12 @@ import { assert } from 'chai';
 import {
     isUpperCase,
     isLowerCase,
-    isCapital,
-    upperFirst,
-    lowerFirst,
-    upper,
-    lower,
-    capitalize,
-    lowerIfNotUpperCase,
-    capitalizeIfNotUpperCase,
+    isTitleCase,
+    toUpperCase,
+    toLowerCase,
+    toTitleCase,
+    toLowerCaseIfNotUpperCase,
+    toTitleCaseIfNotUpperCase,
     duplicate,
     trim,
     words,
@@ -35,10 +33,10 @@ describe('String Utils Tests', function() {
     }
     testCaseChecker(isUpperCase, testStrings, [true, false, false, false]);
     testCaseChecker(isLowerCase, testStrings, [false, true, false, true]);
-    testCaseChecker(isCapital, testStrings, [false, false, true, false]);
+    testCaseChecker(isTitleCase, testStrings, [false, false, true, false]);
 
     function testCaseConverter(
-        converter: typeof upperFirst,
+        converter: typeof toUpperCase,
         testCases: string[],
         assertions: string[]
     ) {
@@ -52,18 +50,16 @@ describe('String Utils Tests', function() {
             });
         });
     }
-    testCaseConverter(upperFirst, testStrings, ['UPPERCASE', 'Lowercase', 'Capital', 'String01']);
-    testCaseConverter(lowerFirst, testStrings, ['uPPERCASE', 'lowercase', 'capital', 'string01']);
-    testCaseConverter(upper, testStrings, ['UPPERCASE', 'LOWERCASE', 'CAPITAL', 'STRING01']);
-    testCaseConverter(lower, testStrings, ['uppercase', 'lowercase', 'capital', 'string01']);
-    testCaseConverter(capitalize, testStrings, ['Uppercase', 'Lowercase', 'Capital', 'String01']);
-    testCaseConverter(lowerIfNotUpperCase, testStrings, [
+    testCaseConverter(toUpperCase, testStrings, ['UPPERCASE', 'LOWERCASE', 'CAPITAL', 'STRING01']);
+    testCaseConverter(toLowerCase, testStrings, ['uppercase', 'lowercase', 'capital', 'string01']);
+    testCaseConverter(toTitleCase, testStrings, ['Uppercase', 'Lowercase', 'Capital', 'String01']);
+    testCaseConverter(toLowerCaseIfNotUpperCase, testStrings, [
         'UPPERCASE',
         'lowercase',
         'capital',
         'string01',
     ]);
-    testCaseConverter(capitalizeIfNotUpperCase, testStrings, [
+    testCaseConverter(toTitleCaseIfNotUpperCase, testStrings, [
         'UPPERCASE',
         'Lowercase',
         'Capital',

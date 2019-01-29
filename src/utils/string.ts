@@ -6,36 +6,28 @@ export function isLowerCase(str: string): boolean {
     return /^[a-z\d]+$/.test(str);
 }
 
-export function isCapital(str: string): boolean {
+export function isTitleCase(str: string): boolean {
     return isUpperCase(str[0]) && isLowerCase(str.slice(1));
 }
 
-export function upperFirst(str: string): string {
-    return `${str[0].toUpperCase()}${str.slice(1)}`;
-}
-
-export function lowerFirst(str: string): string {
-    return `${str[0].toLowerCase()}${str.slice(1)}`;
-}
-
-export function upper(str: string): string {
+export function toUpperCase(str: string): string {
     return str.toUpperCase();
 }
 
-export function capitalize(str: string): string {
-    return upperFirst(str.toLowerCase());
-}
-
-export function lower(str: string): string {
+export function toLowerCase(str: string): string {
     return str.toLowerCase();
 }
 
-export function lowerIfNotUpperCase(str: string): string {
+export function toTitleCase(str: string): string {
+    return `${str[0].toUpperCase()}${str.slice(1).toLowerCase()}`;
+}
+
+export function toLowerCaseIfNotUpperCase(str: string): string {
     return isUpperCase(str) ? str : str.toLowerCase();
 }
 
-export function capitalizeIfNotUpperCase(str: string): string {
-    return isUpperCase(str) ? str : capitalize(str);
+export function toTitleCaseIfNotUpperCase(str: string): string {
+    return isUpperCase(str) ? str : toTitleCase(str);
 }
 
 export function duplicate(str: string, n: number) {

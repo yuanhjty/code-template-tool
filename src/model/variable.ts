@@ -15,12 +15,14 @@ export default class Variable implements IVariable {
             prefixUnderscore = 0,
             suffixUnderscore = 0,
         } = variableConfigDTO;
-        const { rawInput = false, case: styleCase = AUTO, prefix = '', suffix = '' } = style || {};
+        const { noTransformation = void 0, keepUpperCase = void 0, case: styleCase = AUTO, prefix = '', suffix = '' } =
+            style || {};
 
         this._name = this.normalizeName(name);
         this._value = defaultValue;
         this._style = {
-            rawInput,
+            noTransformation,
+            keepUpperCase,
             case: styleCase || variableCase,
             prefix: prefix || duplicate('_', prefixUnderscore),
             suffix: suffix || duplicate('_', suffixUnderscore),

@@ -2,13 +2,15 @@ import {
     words,
     isUpperCase,
     isLowerCase,
-    isCapital,
+    isTitleCase,
     trim,
-    lowerIfNotUpperCase,
-    capitalizeIfNotUpperCase,
-    upper,
+    toTitleCase,
+    toUpperCase as stringToUpperCase,
+    toLowerCase as stringToLowerCase,
+    toLowerCaseIfNotUpperCase,
+    toTitleCaseIfNotUpperCase,
 } from './string';
-import { pipe, flipCurry, TPipeFunction } from './function';
+import { pipe, flipCurry } from './function';
 import { IIdentifierStyleDTO } from '../model/types';
 
 // Identifier case enums ----
@@ -42,57 +44,74 @@ const kebabSep = '-';
 const emptySep = '';
 
 // Identifier converters ----
-function convertCase(str: string, sep: TSep, wordConverter: TMapCbl): string {
-    return words(str).map(wordConverter).join(sep);
+function convertCase(value: string, sep: TSep, wordConverter: TMapCbl): string {
+    return words(value)
+        .map(wordConverter)
+        .join(sep);
 }
 
-export function toLowerCase(str: string): string {
-    return convertCase(str, emptySep, lowerIfNotUpperCase);
+function getToLowerCaseConverter(keepUpperCase?: boolean) {
+    return keepUpperCase ? toLowerCaseIfNotUpperCase : stringToLowerCase;
 }
 
-export function toUpperCase(str: string): string {
-    return convertCase(str, emptySep, upper);
+function getToTitleCaseConverter(keepUpperCase?: boolean) {
+    return keepUpperCase ? toTitleCaseIfNotUpperCase : toTitleCase;
 }
 
-export function toPascalCase(str: string): string {
-    return convertCase(str, emptySep, capitalizeIfNotUpperCase);
+export function toLowerCase(value: string, keepUpperCase?: boolean): string {
+    return convertCase(value, emptySep, getToLowerCaseConverter(keepUpperCase));
 }
 
-export function toCamelCase(str: string): string {
-    return convertCase(str, emptySep, (word: string, index: number) =>
-        index === 0 ? lowerIfNotUpperCase(word) : capitalizeIfNotUpperCase(word)
-    );
+export function toUpperCase(value: string): string {
+    return convertCase(value, emptySep, stringToUpperCase);
 }
 
-export function toSnakeCase(str: string): string {
-    return convertCase(str, snakeSep, lowerIfNotUpperCase);
+export function toPascalCase(value: string, keepUpperCase?: boolean): string {
+    return convertCase(value, emptySep, getToTitleCaseConverter(keepUpperCase));
 }
 
-export function toKebabCase(str: string): string {
-    return convertCase(str, kebabSep, lowerIfNotUpperCase);
+function getToCamelCaseMapCbl(keepUpperCase?: boolean) {
+    return function(value: string, index: number): string {
+        const fistWordConverter = getToLowerCaseConverter(keepUpperCase);
+        const restWordsConverter = getToTitleCaseConverter(keepUpperCase);
+        const converter = index === 0 ? fistWordConverter : restWordsConverter;
+        return converter(value);
+    };
 }
 
-export function toSnakeUpperCase(str: string): string {
-    return convertCase(str, snakeSep, upper);
+export function toCamelCase(value: string, keepUpperCase?: boolean): string {
+    return convertCase(value, emptySep, getToCamelCaseMapCbl(keepUpperCase));
 }
 
-export function toSnakePascalCase(str: string): string {
-    return convertCase(str, snakeSep, capitalizeIfNotUpperCase);
+export function toSnakeCase(value: string, keepUpperCase?: boolean): string {
+    return convertCase(value, snakeSep, getToLowerCaseConverter(keepUpperCase));
 }
 
-export function toKebabUpperCase(str: string): string {
-    return convertCase(str, kebabSep, upper);
+export function toKebabCase(value: string, keepUpperCase?: boolean): string {
+    return convertCase(value, kebabSep, getToLowerCaseConverter(keepUpperCase));
 }
 
-export function toKebabPascalCase(str: string): string {
-    return convertCase(str, kebabSep, capitalizeIfNotUpperCase);
+export function toSnakeUpperCase(value: string): string {
+    return convertCase(value, snakeSep, stringToUpperCase);
+}
+
+export function toSnakePascalCase(value: string, keepUpperCase?: boolean): string {
+    return convertCase(value, snakeSep, getToTitleCaseConverter(keepUpperCase));
+}
+
+export function toKebabUpperCase(value: string): string {
+    return convertCase(value, kebabSep, stringToUpperCase);
+}
+
+export function toKebabPascalCase(value: string, keepUpperCase?: boolean): string {
+    return convertCase(value, kebabSep, getToTitleCaseConverter(keepUpperCase));
 }
 // ---- Identifier converters
 
 export function normalizeCase(caseStr: string) {
     return pipe(
-        toPascalCase,
-        upper
+        flipCurry(toPascalCase)(false),
+        stringToUpperCase
     )(caseStr);
 }
 
@@ -107,16 +126,12 @@ function isLowerCaseList(wordList: string[]): boolean {
 
 function isCamelCaseList(wordList: string[]): boolean {
     return (
-        isLowerCase(wordList[0]) &&
-        wordList.slice(1).every((word: string) => isCapital(word) || isUpperCase(word))
+        isLowerCase(wordList[0]) && wordList.slice(1).every((word: string) => isTitleCase(word) || isUpperCase(word))
     );
 }
 
 function isPascalCaseList(wordList: string[]): boolean {
-    return (
-        !isUpperCaseList(wordList) &&
-        wordList.every((word: string) => isCapital(word) || isUpperCase(word))
-    );
+    return !isUpperCaseList(wordList) && wordList.every((word: string) => isTitleCase(word) || isUpperCase(word));
 }
 
 /**
@@ -181,7 +196,7 @@ export function checkIdentifierCase(identifier: string): string {
 // ---- Identifier case checker
 
 // Identifier case and style converter ----
-const identifierConverterTable: { [propName: string]: TPipeFunction<string> } = {
+const identifierConverterTable: { [propName: string]: Function } = {
     [LOWER_CASE]: toLowerCase,
     [UPPER_CASE]: toUpperCase,
     [CAMEL_CASE]: toCamelCase,
@@ -202,16 +217,12 @@ const identifierConverterTable: { [propName: string]: TPipeFunction<string> } = 
     [UNKNOWN]: (arg: string) => arg,
 };
 
-export function convertIdentifierCase(identifier: string, identifierCase: string): string {
-    return identifierConverterTable[identifierCase](identifier);
+export function convertIdentifierCase(identifier: string, identifierCase: string, keepUpperCase?: boolean): string {
+    return identifierConverterTable[identifierCase](identifier, keepUpperCase);
 }
 
-export function convertIdentifierStyle(
-    identifier: string,
-    style: IIdentifierStyleDTO,
-    placeholder: string
-): string {
-    if (style.rawInput) {
+export function convertIdentifierStyle(identifier: string, style: IIdentifierStyleDTO, placeholder: string): string {
+    if (style.noTransformation) {
         return identifier;
     }
 
@@ -219,8 +230,8 @@ export function convertIdentifierStyle(
     if (identifierCase === AUTO) {
         identifierCase = checkIdentifierCase(placeholder);
     }
-    const { prefix, suffix } = style;
-    const convertedIdentifier = convertIdentifierCase(identifier, identifierCase);
+    const { keepUpperCase, prefix, suffix } = style;
+    const convertedIdentifier = convertIdentifierCase(identifier, identifierCase, keepUpperCase);
     return `${prefix}${convertedIdentifier}${suffix}`;
 }
 // ---- Identifier case and style converter

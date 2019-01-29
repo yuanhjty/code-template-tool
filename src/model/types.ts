@@ -1,5 +1,6 @@
 export interface IIdentifierStyleDTO {
-    rawInput: boolean;
+    noTransformation?: boolean;
+    keepUpperCase?: boolean;
     case: string;
     prefix: string;
     suffix: string;

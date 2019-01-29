@@ -28,102 +28,58 @@ import {
 } from '../../utils/identifier';
 
 describe('Identifier Utils Tests', function() {
-    const wordsStrings = [
-        'my lovely cat',
-        'My Lovely Cat',
-        'my_lovely_cat',
-        'My_Lovely_Cat',
-        'my-lovely-cat',
-        'My-Lovely-Cat',
-        'myLovelyCat',
-        'MyLovelyCat',
-    ];
-    const wordStrings = ['cat', 'Cat'];
-    const upperCaseWordsStrings = ['MY LOVELY CAT', 'MY_LOVELY_CAT', 'MY-LOVELY-CAT'];
-    const upperCaseWordStrings = ['CAT'];
-    const wordsStringTestCases = [
-        ...wordsStrings,
-        ...wordStrings,
-        ...upperCaseWordsStrings,
-        ...upperCaseWordStrings,
-    ];
-
-    function testCaseConverter(
-        converter: typeof toCamelCase,
-        testCases: string[],
-        assertions: string[]
-    ) {
+    function testCaseConverter(converter: typeof toCamelCase, testCases: { [propName: string]: string[] }, keepUpperCase?: boolean) {
         describe(converter.name, function() {
-            testCases.forEach((identifier: string, index: number) => {
-                it(`${converter.name}('${identifier}') should return '${
-                    assertions[index]
-                }'`, function() {
-                    assert.strictEqual(converter(identifier), assertions[index]);
+            testCases.identifiers.forEach((identifier: string, index: number) => {
+                const expectedValue = testCases[converter.name][index];
+                it(`${converter.name}('${identifier}'${keepUpperCase ? ', ' + keepUpperCase : ''}) should return '${expectedValue}'`, function() {
+                    assert.strictEqual(converter(identifier, keepUpperCase), expectedValue);
                 });
             });
         });
     }
 
-    testCaseConverter(toLowerCase, wordsStringTestCases, [
-        ...wordsStrings.map(item => 'mylovelycat'),
-        ...wordStrings.map(item => 'cat'),
-        ...upperCaseWordsStrings.map(item => 'MYLOVELYCAT'),
-        ...upperCaseWordStrings.map(item => 'CAT'),
-    ]);
-    testCaseConverter(toUpperCase, wordsStringTestCases, [
-        ...wordsStrings.map(item => 'MYLOVELYCAT'),
-        ...wordStrings.map(item => 'CAT'),
-        ...upperCaseWordsStrings.map(item => 'MYLOVELYCAT'),
-        ...upperCaseWordStrings.map(item => 'CAT'),
-    ]);
-    testCaseConverter(toPascalCase, wordsStringTestCases, [
-        ...wordsStrings.map(item => 'MyLovelyCat'),
-        ...wordStrings.map(item => 'Cat'),
-        ...upperCaseWordsStrings.map(item => 'MYLOVELYCAT'),
-        ...upperCaseWordStrings.map(item => 'CAT'),
-    ]);
-    testCaseConverter(toCamelCase, wordsStringTestCases, [
-        ...wordsStrings.map(item => 'myLovelyCat'),
-        ...wordStrings.map(item => 'cat'),
-        ...upperCaseWordsStrings.map(item => 'MYLOVELYCAT'),
-        ...upperCaseWordStrings.map(item => 'CAT'),
-    ]);
-    testCaseConverter(toSnakeCase, wordsStringTestCases, [
-        ...wordsStrings.map(item => 'my_lovely_cat'),
-        ...wordStrings.map(item => 'cat'),
-        ...upperCaseWordsStrings.map(item => 'MY_LOVELY_CAT'),
-        ...upperCaseWordStrings.map(item => 'CAT'),
-    ]);
-    testCaseConverter(toKebabCase, wordsStringTestCases, [
-        ...wordsStrings.map(item => 'my-lovely-cat'),
-        ...wordStrings.map(item => 'cat'),
-        ...upperCaseWordsStrings.map(item => 'MY-LOVELY-CAT'),
-        ...upperCaseWordStrings.map(item => 'CAT'),
-    ]);
-    testCaseConverter(toSnakeUpperCase, wordsStringTestCases, [
-        ...wordsStrings.map(item => 'MY_LOVELY_CAT'),
-        ...wordStrings.map(item => 'CAT'),
-        ...upperCaseWordsStrings.map(item => 'MY_LOVELY_CAT'),
-        ...upperCaseWordStrings.map(item => 'CAT'),
-    ]);
-    testCaseConverter(toSnakePascalCase, wordsStringTestCases, [
-        ...wordsStrings.map(item => 'My_Lovely_Cat'),
-        ...wordStrings.map(item => 'Cat'),
-        ...upperCaseWordsStrings.map(item => 'MY_LOVELY_CAT'),
-        ...upperCaseWordStrings.map(item => 'CAT'),
-    ]);
-    testCaseConverter(toKebabUpperCase, wordsStringTestCases, [
-        ...wordsStrings.map(item => 'MY-LOVELY-CAT'),
-        ...wordStrings.map(item => 'CAT'),
-        ...upperCaseWordsStrings.map(item => 'MY-LOVELY-CAT'),
-        ...upperCaseWordStrings.map(item => 'CAT'),
-    ]);
-    testCaseConverter(toKebabPascalCase, wordsStringTestCases, [
-        ...wordsStrings.map(item => 'My-Lovely-Cat'),
-        ...wordStrings.map(item => 'Cat'),
-        ...upperCaseWordsStrings.map(item => 'MY-LOVELY-CAT'),
-        ...upperCaseWordStrings.map(item => 'CAT'),
-    ]);
+    const convertersNotKeepUpperCaseTestCases = {
+        identifiers: ['cat', 'CAT', 'myLovelyCat', 'MYLovelyCat', 'myLOVELYCat', 'MY_LOVELY_CAT'],
+        [toLowerCase.name]: ['cat', 'cat', 'mylovelycat', 'mylovelycat', 'mylovelycat', 'mylovelycat'],
+        [toUpperCase.name]: ['CAT', 'CAT', 'MYLOVELYCAT', 'MYLOVELYCAT', 'MYLOVELYCAT', 'MYLOVELYCAT'],
+        [toPascalCase.name]: ['Cat', 'Cat', 'MyLovelyCat', 'MyLovelyCat', 'MyLovelyCat', 'MyLovelyCat'],
+        [toCamelCase.name]: ['cat', 'cat', 'myLovelyCat', 'myLovelyCat', 'myLovelyCat', 'myLovelyCat'],
+        [toSnakeCase.name]: ['cat', 'cat', 'my_lovely_cat', 'my_lovely_cat', 'my_lovely_cat', 'my_lovely_cat'],
+        [toKebabCase.name]: ['cat', 'cat', 'my-lovely-cat', 'my-lovely-cat', 'my-lovely-cat', 'my-lovely-cat'],
+        [toSnakeUpperCase.name]: ['CAT', 'CAT', 'MY_LOVELY_CAT', 'MY_LOVELY_CAT', 'MY_LOVELY_CAT', 'MY_LOVELY_CAT'],
+        [toSnakePascalCase.name]: ['Cat', 'Cat', 'My_Lovely_Cat', 'My_Lovely_Cat', 'My_Lovely_Cat', 'My_Lovely_Cat'],
+        [toKebabUpperCase.name]: ['CAT', 'CAT', 'MY-LOVELY-CAT', 'MY-LOVELY-CAT', 'MY-LOVELY-CAT', 'MY-LOVELY-CAT'],
+        [toKebabPascalCase.name]: ['Cat', 'Cat', 'My-Lovely-Cat', 'My-Lovely-Cat', 'My-Lovely-Cat', 'My-Lovely-Cat'],
+    };
+    testCaseConverter(toLowerCase, convertersNotKeepUpperCaseTestCases);
+    testCaseConverter(toUpperCase, convertersNotKeepUpperCaseTestCases);
+    testCaseConverter(toPascalCase, convertersNotKeepUpperCaseTestCases);
+    testCaseConverter(toCamelCase, convertersNotKeepUpperCaseTestCases);
+    testCaseConverter(toSnakeCase, convertersNotKeepUpperCaseTestCases);
+    testCaseConverter(toKebabCase, convertersNotKeepUpperCaseTestCases);
+    testCaseConverter(toSnakeUpperCase, convertersNotKeepUpperCaseTestCases);
+    testCaseConverter(toSnakePascalCase, convertersNotKeepUpperCaseTestCases);
+    testCaseConverter(toKebabUpperCase, convertersNotKeepUpperCaseTestCases);
+    testCaseConverter(toKebabPascalCase, convertersNotKeepUpperCaseTestCases);
+
+    const convertersKeepUpperCaseTestCases = {
+        identifiers: ['cat', 'CAT', 'myLovelyCat', 'MYLovelyCat', 'myLOVELYCat', 'MY_LOVELY_CAT'],
+        [toLowerCase.name]: ['cat', 'CAT', 'mylovelycat', 'MYlovelycat', 'myLOVELYcat', 'MYLOVELYCAT'],
+        [toPascalCase.name]: ['Cat', 'CAT', 'MyLovelyCat', 'MYLovelyCat', 'MyLOVELYCat', 'MYLOVELYCAT'],
+        [toCamelCase.name]: ['cat', 'CAT', 'myLovelyCat', 'MYLovelyCat', 'myLOVELYCat', 'MYLOVELYCAT'],
+        [toSnakeCase.name]: ['cat', 'CAT', 'my_lovely_cat', 'MY_lovely_cat', 'my_LOVELY_cat', 'MY_LOVELY_CAT'],
+        [toKebabCase.name]: ['cat', 'CAT', 'my-lovely-cat', 'MY-lovely-cat', 'my-LOVELY-cat', 'MY-LOVELY-CAT'],
+        [toSnakePascalCase.name]: ['Cat', 'CAT', 'My_Lovely_Cat', 'MY_Lovely_Cat', 'My_LOVELY_Cat', 'MY_LOVELY_CAT'],
+        [toKebabPascalCase.name]: ['Cat', 'CAT', 'My-Lovely-Cat', 'MY-Lovely-Cat', 'My-LOVELY-Cat', 'MY-LOVELY-CAT'],
+    };
+    testCaseConverter(toLowerCase, convertersKeepUpperCaseTestCases, true);
+    testCaseConverter(toPascalCase, convertersKeepUpperCaseTestCases, true);
+    testCaseConverter(toCamelCase, convertersKeepUpperCaseTestCases, true);
+    testCaseConverter(toSnakeCase, convertersKeepUpperCaseTestCases, true);
+    testCaseConverter(toKebabCase, convertersKeepUpperCaseTestCases, true);
+    testCaseConverter(toSnakePascalCase, convertersKeepUpperCaseTestCases, true);
+    testCaseConverter(toKebabPascalCase, convertersKeepUpperCaseTestCases, true);
 
     describe(normalizeCase.name, function() {
         const caseStringTestCases = [
@@ -150,7 +106,7 @@ describe('Identifier Utils Tests', function() {
     });
 
     describe(checkIdentifierCase.name, function() {
-        const identifierTestCases = [
+        const testCases = [
             ['lowercase', LOWER_CASE, 'LOWER_CASE'],
             ['UPPERCASE', UPPER_CASE, 'UPPER_CASE'],
             ['camelCase', CAMEL_CASE, 'CAMEL_CASE'],
@@ -168,10 +124,10 @@ describe('Identifier Utils Tests', function() {
             ['Capital_lowercase', UNKNOWN, 'UNKNOWN'],
         ];
 
-        identifierTestCases.forEach((testCase: string[]) => {
-            it(`${checkIdentifierCase.name}('${testCase[0]}') should return ${testCase[2]} / ${
-                testCase[2]
-            }: '${testCase[1]}'`, function() {
+        testCases.forEach((testCase: string[]) => {
+            it(`${checkIdentifierCase.name}('${testCase[0]}') should return ${testCase[2]} / ${testCase[2]}: '${
+                testCase[1]
+            }'`, function() {
                 assert.strictEqual(checkIdentifierCase(testCase[0]), testCase[1]);
             });
         });
@@ -192,13 +148,10 @@ describe('Identifier Utils Tests', function() {
         ];
 
         testCases.forEach((testCase: string[]) => {
-            it(`${convertIdentifierCase.name}('my lovely cat', ${testCase[1]}) should return '${
-                testCase[2]
-            }' / ${testCase[1]}: '${testCase[0]}'`, function() {
-                assert.strictEqual(
-                    convertIdentifierCase('my lovely cat', testCase[0]),
-                    testCase[2]
-                );
+            it(`${convertIdentifierCase.name}('my lovely cat', ${testCase[1]}) should return '${testCase[2]}' / ${
+                testCase[1]
+            }: '${testCase[0]}'`, function() {
+                assert.strictEqual(convertIdentifierCase('my lovely cat', testCase[0]), testCase[2]);
             });
         });
     });
@@ -208,7 +161,7 @@ describe('Identifier Utils Tests', function() {
             [
                 'my_Lovely-CAT',
                 {
-                    rawInput: true,
+                    noTransformation: true,
                     case: 'camelCase',
                     prefix: '$',
                     suffix: '$$',
@@ -219,7 +172,19 @@ describe('Identifier Utils Tests', function() {
             [
                 'my_Lovely-CAT',
                 {
-                    rawInput: false,
+                    noTransformation: false,
+                    case: 'camelCase',
+                    prefix: '__',
+                    suffix: '$$',
+                },
+                'placeholder',
+                '__myLovelyCat$$',
+            ],
+            [
+                'my_Lovely-CAT',
+                {
+                    noTransformation: false,
+                    keepUpperCase: true,
                     case: 'camelCase',
                     prefix: '__',
                     suffix: '$$',
@@ -230,7 +195,7 @@ describe('Identifier Utils Tests', function() {
             [
                 'my_Lovely-cat',
                 {
-                    rawInput: false,
+                    noTransformation: false,
                     case: 'Snake_Pascal_Case',
                     prefix: '_',
                     suffix: '',
@@ -241,7 +206,7 @@ describe('Identifier Utils Tests', function() {
             [
                 'myLovelyCat',
                 {
-                    rawInput: false,
+                    noTransformation: false,
                     case: 'auto',
                     prefix: '',
                     suffix: '',
@@ -252,7 +217,7 @@ describe('Identifier Utils Tests', function() {
             [
                 'my lovely cat',
                 {
-                    rawInput: false,
+                    noTransformation: false,
                     case: 'auto',
                     prefix: '',
                     suffix: '',
@@ -263,7 +228,7 @@ describe('Identifier Utils Tests', function() {
             [
                 'my lovely cat',
                 {
-                    rawInput: false,
+                    noTransformation: false,
                     case: 'auto',
                     prefix: '',
                     suffix: '',
@@ -274,7 +239,7 @@ describe('Identifier Utils Tests', function() {
             [
                 'myLovely-cat',
                 {
-                    rawInput: false,
+                    noTransformation: false,
                     case: 'auto',
                     prefix: '',
                     suffix: '',
@@ -285,7 +250,7 @@ describe('Identifier Utils Tests', function() {
             [
                 'myLovely-cat',
                 {
-                    rawInput: false,
+                    noTransformation: false,
                     case: 'auto',
                     prefix: '_',
                     suffix: '',
@@ -296,7 +261,7 @@ describe('Identifier Utils Tests', function() {
             [
                 'myLovely-cat',
                 {
-                    rawInput: false,
+                    noTransformation: false,
                     case: 'auto',
                     prefix: '_',
                     suffix: '',
@@ -307,7 +272,7 @@ describe('Identifier Utils Tests', function() {
             [
                 'myLovely-cat',
                 {
-                    rawInput: false,
+                    noTransformation: false,
                     case: 'auto',
                     prefix: '_',
                     suffix: '',
@@ -321,10 +286,7 @@ describe('Identifier Utils Tests', function() {
             it(`${index}: ${convertIdentifierStyle.name}('${testCase[0]}', ...) should be '${
                 testCase[3]
             }'`, function() {
-                assert.strictEqual(
-                    convertIdentifierStyle(testCase[0], testCase[1], testCase[2]),
-                    testCase[3]
-                );
+                assert.strictEqual(convertIdentifierStyle(testCase[0], testCase[1], testCase[2]), testCase[3]);
             });
         });
     });
