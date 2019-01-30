@@ -82,7 +82,8 @@
             "properties": {
                 "codeTemplateTool.templatesPath": {
                     "type": "string",
-                    "default": "~/.vscode/templates"
+                    "default": "~/.vscode/templates",
+                    "description": "Only support absolute path. You can use `~/` to reference user home directory."
                 },
                 "codeTemplateTool.configFile": {
                     "type": "string",
@@ -96,15 +97,18 @@
                     "type": "array",
                     "default": [
                         ".DS_Store"
-                    ]
+                    ],
+                    "description": "An array of glob patterns. Files and folders that match one of the specified patterns will be ignored."
                 },
                 "codeTemplateTool.variable.noTransformation": {
                     "type": "boolean",
-                    "default": false
+                    "default": false,
+                    "description": "Control variable transformation globally. If set to true, raw user input will be used to replace the placeholders in template content. Can be overwritten by the `style.noTransformation` filed in variable configuration."
                 },
                 "codeTemplateTool.variable.keepUpperCase": {
                     "type": "boolean",
-                    "default": false
+                    "default": false,
+                    "description": "If set to `true`, uppercase words in user input variable value will not be transformed to other cases. Can be overwritten by the `style.keepUpperCase` field in variable configuration."
                 }
             }
         }
