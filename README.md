@@ -67,8 +67,6 @@ workspace folder or user home folder based on the `template: New File / Folder F
 
 ### Define Templates
 
-Examples - [_https://github.com/yuanhjty/code-template-tool_](https://github.com/yuanhjty/code-template-tool)
-
 #### Templates folder
 
 All templates should be defined in the templates folder (Specified by the setting `codeTemplateTool.templatesPath`.)
