@@ -12,7 +12,7 @@ Generate files/folders based on templates.
 
 * Allow variables in file content as well as file/folder names. 
   
-* Support multiple identifier styles.
+* Support multiple identifier styles.
 
   * <span id="case-style">Case style</span>
 
@@ -66,8 +66,6 @@ workspace folder or user home folder based on the `template: New File / Folder F
 * Destination folder will show and can be changed in user input interface.
 
 ### Define Templates
-
-Examples - [_https://github.com/yuanhjty/code-template-tool_](https://github.com/yuanhjty/code-template-tool)
 
 #### Templates folder
 
