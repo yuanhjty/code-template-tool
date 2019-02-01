@@ -100,7 +100,7 @@ By default, it's `{homedir}/.vscode/templates`.
     + components              // sub folder with fixed name
   ```
 
-  `___PageName___Page.js`
+  ___PageName___Page.js
   ```js
   import React from 'react'
   import { connectModel } from 'reduxModel'
@@ -126,7 +126,7 @@ By default, it's `{homedir}/.vscode/templates`.
   }))(___PageName___Page)
   ```
 
-  `___pageName___Model.js`
+  ___pageName___Model.js
   ```js
   import {
       createModel,
@@ -221,7 +221,7 @@ By default, it's `{homedir}/.vscode/templates`.
     + components
   ```
 
-  `LovelyCatsPage.js`
+  LovelyCatsPage.js
   ```js
   import React from 'react'
   import { connectModel } from 'reduxModel'
@@ -247,7 +247,7 @@ By default, it's `{homedir}/.vscode/templates`.
   }))(LovelyCatsPage)
   ```
 
-  `lovelyCatsModel.js`
+  lovelyCatsModel.js
   ```js
   import {
       createModel,
