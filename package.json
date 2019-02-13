@@ -3,7 +3,7 @@
     "displayName": "Code Template Tool",
     "description": "Generate code based on the template",
     "icon": "resource/img/icon.png",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "publisher": "yuanhjty",
     "license": "MIT",
     "keywords": [
@@ -109,6 +109,16 @@
                     "type": "boolean",
                     "default": false,
                     "description": "If set to `true`, uppercase words in user input variable value will not be transformed to other cases. Can be overwritten by the `style.keepUpperCase` field in variable configuration."
+                },
+                "codeTemplateTool.variable.leftBoundary": {
+                    "type": "string",
+                    "default": "___",
+                    "description": "The default value is for compatibility. If using variable in file names, the boundary token should not be reserved characters of your operating system. Examples: `{_`, `{{`, `{%`"
+                },
+                "codeTemplateTool.variable.rightBoundary": {
+                    "type": "string",
+                    "default": "___",
+                    "description": "The default value is for compatibility. If using variable in file names, the boundary token should not be reserved characters of your operating system. Examples: `_}`, `}}`, `%}`"
                 }
             }
         }

@@ -7,6 +7,8 @@ const defaultTemplatesPath = resolve(homedir(), '.vscode/templates');
 const defaultConfigFile = 'template.config.json';
 const defaultIgnore: string[] = [];
 const defaultEncoding = filesConfig.get('encoding', 'utf8');
+const defaultVariableLeftBoundary = '{_';
+const defaultVariableRightBoundary = '_}';
 
 const config = {
     getPluginConfiguration(field: string): any {
@@ -40,6 +42,14 @@ const config = {
 
     get variableKeepUpperCase(): boolean {
         return this.getPluginConfiguration('variable.keepUpperCase');
+    },
+
+    get variableLeftBoundary(): string {
+        return this.getPluginConfiguration('variable.leftBoundary') || defaultVariableLeftBoundary;
+    },
+
+    get variableRightBoundary(): string {
+        return this.getPluginConfiguration('variable.rightBoundary') || defaultVariableRightBoundary;
     }
 };
 

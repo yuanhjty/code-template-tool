@@ -2,6 +2,21 @@
 
 Generate files/folders based on templates.
 
+## What's new in 0.4.0
+
+* Support customizing variable's left boundary and right boundary via the `codeTemplateTool.variable.leftBoundary` and `codeTemplateTool.variable.rightBoundary` fields in user settings.
+
+  For example, with the following settings
+
+  ```json
+  {
+      "codeTemplateTool.variable.leftBoundary": "{_",
+      "codeTemplateTool.variable.rightBoundary": "_}",
+  }
+  ```
+
+  a variable will be like this `{_var_}`.
+
 ## Features
 
 * Template describes the shape of the file content as well as the folder structure.
@@ -10,14 +25,14 @@ Generate files/folders based on templates.
 
 * Folders that do not exist can be cerated recursively.
 
-* Allow variables in file content as well as file/folder names. 
+* Allow variables in file content as well as file/folder names.
   
 * Support multiple identifier styles.
 
-  * <span id="case-style">Case style</span>
+  * Case style
 
     | Case            | Example       |  
-    | --------------- | ------------- |  
+    |-----------------|---------------|  
     | camelCase       | myLovelyCat   |  
     | pascalCase      | MyLovelyCat   |  
     | snakeCase       | my_lovely_cat |  
@@ -56,11 +71,11 @@ Generate files/folders based on templates.
 
 * Right click code area of the active editor and pick a command from the popup menu.
 
-* Right click file/folder names or space area of the [_explorer window_](https://code.visualstudio.com/docs/getstarted/tips-and-tricks#_move-to-explorer-window) and pick a command from the popup menu. 
+* Right click file/folder names or space area of the [_explorer window_](https://code.visualstudio.com/docs/getstarted/tips-and-tricks#_move-to-explorer-window) and pick a command from the popup menu.
 
 ### Destination Folder
 
-* The initial destination folder may be the active editor's folder, right clicked folder, right clicked file's folder, 
+* The initial destination folder may be the active editor's folder, right clicked folder, right clicked file's folder,
 workspace folder or user home folder based on the `template: New File / Folder From Template` command's invocation mode.
 
 * Destination folder will show and can be changed in user input interface.
@@ -74,7 +89,7 @@ If the specified folder does not exist, it will be auto created.
 
 By default, it's `{homedir}/.vscode/templates`.
 
-#### Template structure 
+#### Template structure  
 
 ```js
 + exampleTemplate              // template define folder
@@ -83,9 +98,16 @@ By default, it's `{homedir}/.vscode/templates`.
 ```
 
 * Template content
-    
 
-  __Example1:__ 
+  Template content support variables.
+
+  By default, a variable in template content is like this: `___var___`. It takes `___` as it's left boundary and right boundary.
+  
+  You can set variables' boundaries via the `codeTemplateTool.variable.leftBoundary` and `codeTemplate.variable.rightBoundary` fields in user settings.
+
+  For example, if you set `codeTemplateTool.variable.leftBoundary` as `{_` and `codeTemplateTool.variable.rightBoundary` as `_}`, a variable will be like this: `{_var_}`
+
+  __Example1:__
 
   ---
 
@@ -101,6 +123,7 @@ By default, it's `{homedir}/.vscode/templates`.
   ```
 
   ___PageName___Page.js
+
   ```js
   import React from 'react'
   import { connectModel } from 'reduxModel'
@@ -127,6 +150,7 @@ By default, it's `{homedir}/.vscode/templates`.
   ```
 
   ___pageName___Model.js
+
   ```js
   import {
       createModel,
@@ -163,7 +187,8 @@ By default, it's `{homedir}/.vscode/templates`.
 
   _If the configuration file is:_
   
-  `template.config.json`
+  template.config.json
+
   ```json
   {
       "name": "Common Page Template",
@@ -173,7 +198,8 @@ By default, it's `{homedir}/.vscode/templates`.
 
   or
 
-  `template.config.json`
+  template.config.json
+
   ```json
   {
       "name": "Common Page Template",
@@ -202,7 +228,7 @@ By default, it's `{homedir}/.vscode/templates`.
 
   _and the user inputs are as follows:_
 
-  ```
+  ```plain
   pageName: lovelyCats
   initialStateType: list
   reducerType: list
@@ -222,6 +248,7 @@ By default, it's `{homedir}/.vscode/templates`.
   ```
 
   LovelyCatsPage.js
+
   ```js
   import React from 'react'
   import { connectModel } from 'reduxModel'
@@ -248,6 +275,7 @@ By default, it's `{homedir}/.vscode/templates`.
   ```
 
   lovelyCatsModel.js
+
   ```js
   import {
       createModel,
@@ -284,15 +312,17 @@ By default, it's `{homedir}/.vscode/templates`.
 
   ---
 
-  __Example2:__ 
+  __Example2:__
 
   ---
+
   ```js
   // The template content is two files and their content.
 
   - ___componentName___.js    // file with variable in it's name
   - ___componentName___.css
   ```
+
   ---
 
 * Template configuration file
@@ -304,17 +334,17 @@ By default, it's `{homedir}/.vscode/templates`.
   __Example:__
 
   template.config.json
+
   ```json
-  { 
+  {
       "name": "Template Example",
       "variables": [
           "{variable configuration}",
           "{variable configuration}",
           "..."
-      ] 
+      ]
   }
   ```
-
 
   * The `name` field specifies template's name showed in the template select list.
 
@@ -323,11 +353,11 @@ By default, it's `{homedir}/.vscode/templates`.
     __Examples:__
 
     ```json
-    // Simplified configuration 
+    // Simplified configuration
 
     "variableName" // just a variable name string
     ```
-   
+
     ```json
     // Full configuration
 
@@ -349,8 +379,8 @@ By default, it's `{homedir}/.vscode/templates`.
 
 * A variable in template content is prefixed and suffixed with three underscores to distinguish from non variable content.
 
-* Take `myPet` as an example of variable name, in template configuration files, you can use any of 
-  `myPet, MyPet, my_pet, my-pet, My_Pet, MY_PET, My-Pet, MY-PET` 
+* Take `myPet` as an example of variable name, in template configuration files, you can use any of
+  `myPet, MyPet, my_pet, my-pet, My_Pet, MY_PET, My-Pet, MY-PET`
   to represent any one of
   `___myPet___, ___MyPet___, ___my_pet___, ___my-pet___, ___My_Pet___, ___MY_PET___, ___My-Pet___ and ___MY-PET___`
    in corresponding template content.
@@ -366,7 +396,7 @@ uppercase words in user input will not be transformed to other cases,they will s
   __Example__
 
   | words              | transform to | keepUpperCase is false | keepUpperCase is true |  
-  | ------------------ | ------------ | ---------------------- | --------------------- |  
+  |--------------------|--------------|------------------------|-----------------------|  
   | "XML HTTP request" | pascalCase   | `XmlHttpRequest`       | `XMLHTTPRequest`      |  
   | "new customer ID"  | camelCase    | `newCustomerId`        | `newCustomerID`       |  
 
@@ -393,6 +423,7 @@ uppercase words in user input will not be transformed to other cases,they will s
     other content ___My-Pet___ Other content
     other content ___MY-PET___ Other content
     ```
+
     ---
     Template configuration:
 
@@ -409,17 +440,20 @@ uppercase words in user input will not be transformed to other cases,they will s
         ]
     }
     ```
+
     or
+
     ```json
     {
         "name": "Template Example",
         "variables": ["myPet"]
     }
     ```
+
     ---
     Possible user inputs for the variable `myPet`:
 
-    ```
+    ```plain
     lovelyCat
     LovelyCat
     lovely_cat
@@ -432,8 +466,10 @@ uppercase words in user input will not be transformed to other cases,they will s
     Lovely Cat
     LOVELY CAT
     ```
+
     ---
     Generated content:
+
     ```js
     other contentLovelyCatOther content
     other content lovelyCat Other content
@@ -444,14 +480,15 @@ uppercase words in user input will not be transformed to other cases,they will s
     other content Lovely-Cat Other content
     other content LOVELY-CAT Other content
     ```
+
     ---
 
   * After case transformation,  __`style.prefix`__ and __`style.suffix`__ will be added to the variable value.
   
     __Example__:
-    
+
     Template content:
-    
+
     ```js
     other content ___myPet___ other content
     ```
@@ -479,7 +516,6 @@ uppercase words in user input will not be transformed to other cases,they will s
     ```js
     other content __LovelyCat$$ other content
     ```
-
 
 ## Settings
 
@@ -535,20 +571,53 @@ uppercase words in user input will not be transformed to other cases,they will s
 ### 0.2.0
 
 * Refactor project structure.
+
 * Support prefix and suffix underscores.
+
 * Support uppercase words in camel case and pascal case identifiers.
 
 ### 0.3.0
 
 * Refactor project structure.
-* Upgrade user interface. 
+
+* Upgrade user interface.
+
 * Support modification of destination folder after select template.
+
 * Support recursive creation of folders.
+
 * Support custom configuration file name.
+
 * Support custom encoding.
+
 * Support glob pattern filter when read template file/folders.
+
 * Support custom prefix and suffix.
+
 * Support variable noTransformation globally and locally.
+
 * Support variable keepUpperCase globally and locally.
+
 * Move variable style features down to `style` field of variable configuration.
+
 * Update docs.
+
+### 0.4.0
+
+* Support customizing variable's left boundary and right boundary via the `codeTemplateTool.variable.leftBoundary` and `codeTemplateTool.variable.rightBoundary` fields in user settings.
+
+* Fix the issue that the additional underscores are replaced.
+  
+  For example
+
+  ```plain
+  // before
+  placeholder: ____var___
+  user input: value
+  resolve result: value
+
+  // now
+  placeholder: ____var___
+  user input: value
+  resolve result: _value
+  ```

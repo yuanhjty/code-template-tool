@@ -4,6 +4,7 @@ import { resolve } from 'path';
 import { mkdirp, readFile, writeFileP } from '../utils/fs';
 import { convertIdentifierStyle } from '../utils/identifier';
 import { FileAlreadyExistsError } from '../utils/error';
+import { trimStart, trimEnd, escapeRegExpSpecialChars } from '../utils/string';
 import config from '../utils/config';
 import { ITemplate, IVariableTable } from '../model/types';
 
@@ -78,9 +79,20 @@ export default class CodesGenerator {
     }
 
     private resolveVariable(content: string, variableTable: IVariableTable): string {
-        const reg = /___[_a-zA-Z\d\-]+___/g;
-        return content.replace(reg, (m: string) => {
-            const key = m.slice(3, -3);
+        const varLeft = config.variableLeftBoundary;
+        const varRight = config.variableRightBoundary;
+        let pattern;
+        if (varLeft === '___' && varRight === '___') {
+            pattern = /___([a-zA-Z\d-]|[a-zA-Z][_a-zA-Z\d\-]*[a-zA-Z\d-])___/g;
+        } else {
+            const varLeftPatternStr = escapeRegExpSpecialChars(varLeft);
+            const varRightPatternStr = escapeRegExpSpecialChars(varRight);
+            const patternStr = `${varLeftPatternStr}[_a-zA-Z\\d\\-]+${varRightPatternStr}`;
+            pattern = new RegExp(patternStr, 'g');
+        }
+
+        return content.replace(pattern, (m: string) => {
+            const key = trimStart(trimEnd(m, varRight), varLeft);
             const variable = variableTable.get(key);
             if (!variable || !variable.value) {
                 return m;

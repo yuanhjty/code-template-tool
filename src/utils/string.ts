@@ -1,3 +1,5 @@
+import { regExpSpecialChars } from './constants';
+
 export function isUpperCase(str: string): boolean {
     return /^[A-Z\d]+$/.test(str);
 }
@@ -38,10 +40,9 @@ export function duplicate(str: string, n: number) {
     return strArr.join('');
 }
 
-export function trim(str: string, toTrim: string): string {
+export function trimStart(str: string, toTrim: string): string {
     const step = toTrim.length;
     let prefixEndIndex = 0;
-    let suffixStartIndex = 0;
 
     for (let i = 0; i < str.length; i += step) {
         const s = str.slice(i, i + step);
@@ -51,6 +52,13 @@ export function trim(str: string, toTrim: string): string {
         }
     }
 
+    return str.slice(prefixEndIndex);
+}
+
+export function trimEnd(str: string, toTrim: string): string {
+    const step = toTrim.length;
+    let suffixStartIndex = 0;
+
     for (let i = str.length; i > 0; i -= step) {
         const s = str.slice(i - step, i);
         if (s !== toTrim) {
@@ -59,7 +67,17 @@ export function trim(str: string, toTrim: string): string {
         }
     }
 
-    return str.slice(prefixEndIndex, suffixStartIndex);
+    return str.slice(0, suffixStartIndex);
+}
+
+export function trim(str: string, toTrim: string): string {
+    return trimEnd(trimStart(str, toTrim), toTrim);
+}
+
+export function escapeRegExpSpecialChars(str: string): string {
+    return Array.prototype.map
+        .call(str, (value: string) => (regExpSpecialChars.includes(value) ? `\\${value}` : value))
+        .join('');
 }
 
 const wordPattern = /[a-z\d]+|[A-Z]\d*[a-z][a-z\d]*|[A-Z][A-Z\d]*(?=[A-Z]\d*[a-z][a-z\d]*|[^a-zA-Z\d]|$)/g;
