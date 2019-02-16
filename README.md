@@ -8,14 +8,14 @@ Generate files/folders based on templates.
 
   For example, with the following settings
 
-  ```json
+  ```js
   {
       "codeTemplateTool.variable.leftBoundary": "{_",
       "codeTemplateTool.variable.rightBoundary": "_}",
   }
   ```
 
-  a variable will be like this `{_var_}`.
+  a variable will be like `{_var_}`.
 
 ## Features
 
@@ -189,7 +189,7 @@ By default, it's `{homedir}/.vscode/templates`.
   
   template.config.json
 
-  ```json
+  ```js
   {
       "name": "Common Page Template",
       "variables": ["pageName", "initialStateType", "reducerType"]
@@ -200,7 +200,7 @@ By default, it's `{homedir}/.vscode/templates`.
 
   template.config.json
 
-  ```json
+  ```js
   {
       "name": "Common Page Template",
       "variables": [
@@ -228,7 +228,7 @@ By default, it's `{homedir}/.vscode/templates`.
 
   _and the user inputs are as follows:_
 
-  ```plain
+  ```plaintext
   pageName: lovelyCats
   initialStateType: list
   reducerType: list
@@ -236,7 +236,7 @@ By default, it's `{homedir}/.vscode/templates`.
 
   _Then the generated content will be:_
 
-  ```js
+  ```plaintext
   // Folder structure
 
   + LovelyCatsPage
@@ -335,7 +335,7 @@ By default, it's `{homedir}/.vscode/templates`.
 
   template.config.json
 
-  ```json
+  ```js
   {
       "name": "Template Example",
       "variables": [
@@ -352,13 +352,13 @@ By default, it's `{homedir}/.vscode/templates`.
 
     __Examples:__
 
-    ```json
+    ```js
     // Simplified configuration
 
     "variableName" // just a variable name string
     ```
 
-    ```json
+    ```js
     // Full configuration
 
     {
@@ -427,7 +427,7 @@ uppercase words in user input will not be transformed to other cases,they will s
     ---
     Template configuration:
 
-    ```json
+    ```js
     {
         "name": "Template Example",
         "variables": [
@@ -443,7 +443,7 @@ uppercase words in user input will not be transformed to other cases,they will s
 
     or
 
-    ```json
+    ```js
     {
         "name": "Template Example",
         "variables": ["myPet"]
@@ -453,7 +453,7 @@ uppercase words in user input will not be transformed to other cases,they will s
     ---
     Possible user inputs for the variable `myPet`:
 
-    ```plain
+    ```plaintext
     lovelyCat
     LovelyCat
     lovely_cat
@@ -495,7 +495,7 @@ uppercase words in user input will not be transformed to other cases,they will s
 
     Template config file:
 
-    ```json
+    ```js
     {
         "name": "Template Example",
         "variables": [
@@ -610,7 +610,7 @@ uppercase words in user input will not be transformed to other cases,they will s
   
   For example
 
-  ```plain
+  ```plaintext
   // before
   placeholder: ____var___
   user input: value
