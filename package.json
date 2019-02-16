@@ -3,7 +3,7 @@
     "displayName": "Code Template Tool",
     "description": "Generate code based on the template",
     "icon": "resource/img/icon.png",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "publisher": "yuanhjty",
     "license": "MIT",
     "keywords": [
@@ -83,7 +83,7 @@
                 "codeTemplateTool.templatesPath": {
                     "type": "string",
                     "default": "~/.vscode/templates",
-                    "description": "Only support absolute path. You can use `~/` to reference user home directory."
+                    "description": "Absolute path only. \nVariables supported: \n 1. `{home}`: User home directory. \n 2. `{workspace}`: Workspace directory(directory currently open in vscode) or user home directory if no open directory. \n Examples: `{home}/.vscode/templates`, `{workspace}/templates`. \nYou can also use `~/` to reference user home directory."
                 },
                 "codeTemplateTool.configFile": {
                     "type": "string",
