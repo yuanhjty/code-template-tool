@@ -2,20 +2,36 @@
 
 Generate files/folders based on templates.
 
-## What's new in 0.4.0
+## What's new in 0.5.0
 
-* Support customizing variable's left boundary and right boundary via the `codeTemplateTool.variable.leftBoundary` and `codeTemplateTool.variable.rightBoundary` fields in user settings.
+* Support two variables for the user settings field `templatesPath`: `{home}` and `{workspace}`.
 
-  For example, with the following settings
+  * `{home}`: User home directory.
+  * `{workspace}`: Your workspace directory. That is the directory currently open in your vscode instance.
+    If no directory is open currently, `{workspace}` will be resolved as user home directory.
+  
+  Example:
 
-  ```js
-  {
-      "codeTemplateTool.variable.leftBoundary": "{_",
-      "codeTemplateTool.variable.rightBoundary": "_}",
-  }
+  ```plaintext
+  Your home dir: /users/superman
+  Your current workspace: /users/superman/path/to/project
+
+  {home}/.vscode/templates -> /users/superman/.vscode/templates
+  
+  {workspace}/templates -> /users/superman/path/to/project/templates
   ```
 
-  a variable will be like `{_var_}`.
+* Skip select step when there is only one template.
+
+* Autofocus on variable input box.
+
+* User settings
+  
+  * `codeTemplateTool.userInput.confirmOnEnter`: If set to `true`, you can press `Enter` key to confirm creation.
+  
+  * `codeTemplateTool.userInput.cancelOnEscape`: If set to `true`, you can press `ESC` key to cancel creation.
+
+* Focus on buttons by tab key and trigger by enter key.
 
 ## Features
 
@@ -110,7 +126,7 @@ By default, it's `{homedir}/.vscode/templates`.
   
   You can set variables' boundaries via the `codeTemplateTool.variable.leftBoundary` and `codeTemplate.variable.rightBoundary` fields in user settings.
 
-  For example, if you set `codeTemplateTool.variable.leftBoundary` as `{_` and `codeTemplateTool.variable.rightBoundary` as `_}`, a variable will be like this: `{_var_}`
+  For example, if you set `codeTemplateTool.variable.leftBoundary` to `{_` and `codeTemplateTool.variable.rightBoundary` to `_}`, a variable will be like `{_var_}`
 
   __Example1:__
 
@@ -545,37 +561,77 @@ uppercase words in user input will not be transformed to other cases,they will s
 ## Settings
 
 * `codeTemplateTool.templatesPath`
-  
-  Only support absolute path. You can use `~/` to reference user home directory.
 
-  Default: `~/.vscode/templates`
+  _Default_: `~/.vscode/templates`
+  
+  Should be an local absolute path.
+
+  Variables:
+
+  * `{home}`: User home directory.
+
+  * `{workspace}`: Your workspace directory. That is the directory currently open in your vscode instance.
+    If no directory is open currently, `{workspace}` will be resolved as user home directory.
+  
+  You can also use `~/` to reference user home directory.
+
+  Example:
+
+  ```plaintext
+  Your home dir: /users/superman
+  Your current workspace: /users/superman/path/to/project
+
+  {home}/.vscode/templates -> /users/superman/.vscode/templates
+  {workspace}/templates    -> /users/superman/path/to/project/templates
+  ~/.vscode/templates      -> /users/superman/.vscode/templates
+  ```
 
 * `codeTemplateTool.configFile`
 
-  Default: `template.config.json`
+  _Default_: `template.config.json`
 
 * `codeTemplateTool.encoding`
 
-  Default: `utf8`
+  _Default_: `utf8`
 
 * `codeTemplateTool.ignore`
 
+  _Default_: `[".DS_Store"]`
+
   An array of glob patterns. Files and folders that match one of the specified patterns will be ignored.
 
-  Default: [".DS_Store"]
-
 * `codeTemplateTool.variable.noTransformation`
+
+  _Default_: `false`  
 
   Control variable transformation globally. If set to true, raw user input will be used to replace the placeholders in template content.
   Can be overwritten by the `style.noTransformation` filed in variable configuration.
 
-  Default: `false`  
-
 * `codeTemplateTool.variable.keepUpperCase`
+
+  _Default_: `false`
 
   If set to `true`, uppercase words in user input variable value will not be transformed to other cases. Can be overwritten by the `style.keepUpperCase` field in variable configuration.
 
-  Default: `false`
+* `codeTemplateTool.variable.leftBoundary`
+
+  _Default_: `___`
+
+* `codeTemplateTool.variable.rightBoundary`
+
+  _Default_: `___`
+
+* `codeTemplateTool.userInput.confirmOnEnter`
+
+  _Default_: `false`
+
+  If set to `true`, you can press `Enter` key to confirm creation.
+
+* `codeTemplateTool.userInput.cancelOnEscape`
+
+  _Default_: `false`
+
+  If set to `true`, you can press `ESC` key to cancel creation.
 
 ## Known Issues
 
@@ -633,16 +689,14 @@ uppercase words in user input will not be transformed to other cases,they will s
 
 * Fix the issue that the additional underscores are replaced.
   
-  For example
+### 0.5.0
 
-  ```plaintext
-  // before
-  placeholder: ____var___
-  user input: value
-  resolve result: value
+* Support variables for the user settings field `templatesPath`: `{home}`, `{workspace}`.
 
-  // now
-  placeholder: ____var___
-  user input: value
-  resolve result: _value
-  ```
+* Skip select step when there is only one template.
+
+* Autofocus on variable input box.
+
+* Focus on buttons by tab key and trigger by enter key.
+
+* New user settings: `codeTemplateTool.userInput.confirmOnEnter`, `codeTemplateTool.userInput.cancelOnEscape`
