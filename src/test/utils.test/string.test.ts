@@ -10,6 +10,7 @@ import {
     toTitleCaseIfNotUpperCase,
     duplicate,
     trim,
+    escapeRegExpSpecialChars,
     words,
 } from '../../utils/string';
 
@@ -18,11 +19,7 @@ import {
 describe('String Utils Tests', function() {
     const testStrings = ['UPPERCASE', 'lowercase', 'Capital', 'string01'];
 
-    function testCaseChecker(
-        checker: typeof isUpperCase,
-        testCases: string[],
-        assertions: boolean[]
-    ) {
+    function testCaseChecker(checker: typeof isUpperCase, testCases: string[], assertions: boolean[]) {
         describe(checker.name, function() {
             testCases.forEach((testCase: string, index: number) => {
                 it(`'${testCase}' should return ${assertions[index]}`, function() {
@@ -35,16 +32,10 @@ describe('String Utils Tests', function() {
     testCaseChecker(isLowerCase, testStrings, [false, true, false, true]);
     testCaseChecker(isTitleCase, testStrings, [false, false, true, false]);
 
-    function testCaseConverter(
-        converter: typeof toUpperCase,
-        testCases: string[],
-        assertions: string[]
-    ) {
+    function testCaseConverter(converter: typeof toUpperCase, testCases: string[], assertions: string[]) {
         describe(converter.name, function() {
             testCases.forEach((testCase: string, index: number) => {
-                it(`${converter.name}('${testCases[index]}') should return '${
-                    assertions[index]
-                }'`, function() {
+                it(`${converter.name}('${testCases[index]}') should return '${assertions[index]}'`, function() {
                     assert.strictEqual(converter(testCase), assertions[index]);
                 });
             });
@@ -53,18 +44,8 @@ describe('String Utils Tests', function() {
     testCaseConverter(toUpperCase, testStrings, ['UPPERCASE', 'LOWERCASE', 'CAPITAL', 'STRING01']);
     testCaseConverter(toLowerCase, testStrings, ['uppercase', 'lowercase', 'capital', 'string01']);
     testCaseConverter(toTitleCase, testStrings, ['Uppercase', 'Lowercase', 'Capital', 'String01']);
-    testCaseConverter(toLowerCaseIfNotUpperCase, testStrings, [
-        'UPPERCASE',
-        'lowercase',
-        'capital',
-        'string01',
-    ]);
-    testCaseConverter(toTitleCaseIfNotUpperCase, testStrings, [
-        'UPPERCASE',
-        'Lowercase',
-        'Capital',
-        'String01',
-    ]);
+    testCaseConverter(toLowerCaseIfNotUpperCase, testStrings, ['UPPERCASE', 'lowercase', 'capital', 'string01']);
+    testCaseConverter(toTitleCaseIfNotUpperCase, testStrings, ['UPPERCASE', 'Lowercase', 'Capital', 'String01']);
 
     describe(duplicate.name, function() {
         const str = 'Duplicate';
@@ -80,12 +61,7 @@ describe('String Utils Tests', function() {
         const affix0 = ' ';
         const affix1 = '-';
         const affix2 = '[affix]';
-        function getTestString(
-            affix: string,
-            nPrefix: number,
-            nSuffix: number,
-            base: string = baseString
-        ) {
+        function getTestString(affix: string, nPrefix: number, nSuffix: number, base: string = baseString) {
             return `${duplicate(affix, nPrefix)}${base}${duplicate(affix, nSuffix)}`;
         }
         const testCases = [
@@ -107,7 +83,24 @@ describe('String Utils Tests', function() {
         });
     });
 
-    describe(words.name, function() {
+    describe('escapeRegExpSpecialChars', function() {
+        const testCases = [
+            [
+                'Aa1~!@#%&=_:;\'"<>,-^$.*?+|/\\[](){}',
+                'Aa1~!@#%&=_:;\'"<>,-\\^\\$\\.\\*\\?\\+\\|\\/\\\\\\[\\]\\(\\)\\{\\}',
+            ],
+        ];
+
+        testCases.forEach((item: (string | string[])[]) => {
+            const input = <string>item[0];
+            const output = <string>item[1];
+            it(`escapeRegExpSpecialChars('${input}') should return ${JSON.stringify(output)}`, function() {
+                assert.strictEqual(escapeRegExpSpecialChars(input), output);
+            });
+        });
+    });
+
+    describe('words', function() {
         const testCases = [
             ['lowercase', ['lowercase']],
             ['UPPERCASE', ['UPPERCASE']],
@@ -134,7 +127,7 @@ describe('String Utils Tests', function() {
         testCases.forEach((item: (string | string[])[]) => {
             const input = <string>item[0];
             const output = <string[]>item[1];
-            it(`${words.name}('${input}') should return ${JSON.stringify(output)}`, function() {
+            it(`words('${input}') should return ${JSON.stringify(output)}`, function() {
                 assert.deepStrictEqual(words(input), output);
             });
         });
