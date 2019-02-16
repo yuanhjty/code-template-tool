@@ -1,5 +1,3 @@
-import { regExpSpecialChars } from './constants';
-
 export function isUpperCase(str: string): boolean {
     return /^[A-Z\d]+$/.test(str);
 }
@@ -74,13 +72,12 @@ export function trim(str: string, toTrim: string): string {
     return trimEnd(trimStart(str, toTrim), toTrim);
 }
 
-export function escapeRegExpSpecialChars(str: string): string {
-    return Array.prototype.map
-        .call(str, (value: string) => (regExpSpecialChars.includes(value) ? `\\${value}` : value))
-        .join('');
-}
+export const escapeRegExpSpecialChars = (function() {
+    const pattern = /[\^\$\.\*\?\+\|\/\\\[\]\(\)\{\}]/g;
+    return (str: string): string => str.replace(pattern, m => `\\${m}`);
+})();
 
-const wordPattern = /[a-z\d]+|[A-Z]\d*[a-z][a-z\d]*|[A-Z][A-Z\d]*(?=[A-Z]\d*[a-z][a-z\d]*|[^a-zA-Z\d]|$)/g;
-export function words(str: string): string[] {
-    return str.match(wordPattern) || [];
-}
+export const words = (function() {
+    const wordPattern = /[a-z\d]+|[A-Z]\d*[a-z][a-z\d]*|[A-Z][A-Z\d]*(?=[A-Z]\d*[a-z][a-z\d]*|[^a-zA-Z\d]|$)/g;
+    return (str: string): string[] => str.match(wordPattern) || [];
+})();
