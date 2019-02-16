@@ -40,6 +40,10 @@ export interface IUserInputRequestDTO {
         basePath: string;
         relativePath: string;
     };
+    inputConfig: {
+        confirmOnEnter: boolean;
+        cancelOnEscape: boolean;
+    };
 }
 
 export interface IUserInputResponseDTO {

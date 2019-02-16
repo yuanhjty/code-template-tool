@@ -10,6 +10,10 @@
                 basePath: '',
                 relativePath: '',
             },
+            inputConfig: {
+                confirmOnEnter: false,
+                cancelOnEscape: false,
+            },
         },
 
         handleConfirm() {
@@ -37,7 +41,7 @@
                 destDir: {
                     basePath: destDirBasePath,
                     relativePath: destDirRelativePath,
-                }
+                },
             });
         },
 
@@ -46,9 +50,10 @@
         },
 
         render() {
-            const { variables, destDir, variableTable, templateName } = this.data;
+            const { variables, destDir, variableTable, inputConfig, templateName } = this.data;
 
-            const variablesHTML = (Array.isArray(variables) ? variables : [])
+            const variableArr = Array.isArray(variables) ? variables : [];
+            const variablesHTML = variableArr
                 .map(
                     ({ name }) => `
                         <div class="user-input-variable">
@@ -57,6 +62,20 @@
                         </div>`
                 )
                 .join('');
+
+            const variablePanelHTML =
+                variableArr.length > 0
+                    ? `
+                    <div class="user-input-panel">
+                        <h3 class="user-input-panel-title">Variables</h3>
+                        <div class="user-input-panel-content">
+                            <div class="user-input-variables">
+                                ${variablesHTML}
+                            </div>
+                        </div>
+                    </div>
+                `
+                    : '';
 
             const rootEl = document.getElementById('user-input-root');
             rootEl.innerHTML = `
@@ -77,18 +96,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="user-input-panel">
-                        <h3 class="user-input-panel-title">Variables</h3>
-                        <div class="user-input-panel-content">
-                            <div class="user-input-variables">
-                                ${variablesHTML}
-                            </div>
-                        </div>
-                    </div>
+                    ${variablePanelHTML}
                 </div>
                 <div class="user-input-submit-btns">
-                    <div class="user-input-confirm-btn">Confirm</div>
-                    <div class="user-input-cancel-btn">Cancel</div>
+                    <button class="user-input-confirm-btn">Confirm</button>
+                    <button class="user-input-cancel-btn">Cancel</button>
                 </div>`;
 
             const destDirBaseInputEl = document.querySelector('.user-input-dest-dir-base');
@@ -101,21 +113,37 @@
                 el.value = variableTable.get(el.id);
             });
 
+            const firstVariableInputEl = variableInputEls[0];
+            if (firstVariableInputEl) {
+                firstVariableInputEl.focus();
+            }
+
             const confirmBtnEl = document.querySelector('.user-input-confirm-btn');
             const cancelBtnEl = document.querySelector('.user-input-cancel-btn');
             confirmBtnEl.addEventListener('click', this.handleConfirm.bind(this));
             cancelBtnEl.addEventListener('click', this.handleCancel.bind(this));
+            rootEl.ownerDocument.addEventListener('keydown', e => {
+                if (inputConfig.confirmOnEnter && e.key.toLowerCase() === 'enter') {
+                    this.handleConfirm();
+                }
+                if (inputConfig.cancelOnEscape && e.key.toLowerCase() === 'escape') {
+                    this.handleCancel();
+                }
+            });
         },
 
         start(userInputRequest) {
-            const { variables, destDir, templateName } = userInputRequest;
+            const { variables, destDir, inputConfig, templateName } = userInputRequest;
+            const { data } = this;
+            const { variableTable } = data;
 
-            this.data.templateName = templateName;
-            this.data.variables = variables || [];
-            this.data.destDir = destDir;
-            this.data.variables.forEach(variable => {
-                this.data.variableTable.set(variable.name, variable.value || '');
+            data.templateName = templateName;
+            data.variables = variables || [];
+            data.destDir = destDir;
+            data.variables.forEach(variable => {
+                variableTable.set(variable.name, variable.value || '');
             });
+            data.inputConfig = inputConfig;
             this.render();
         },
     };

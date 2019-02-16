@@ -1,6 +1,7 @@
 import { window, ViewColumn, ExtensionContext, Uri } from 'vscode';
 import { relative, resolve as resolvePath } from 'path';
 import { getWorkspacePath } from '../utils/path';
+import config from '../utils/config';
 import {
     IUserInputRequestDTO,
     IUserInputResponseDTO,
@@ -74,6 +75,10 @@ export default function getUserInput(
                 basePath: workspacePath,
                 relativePath: destDirRelativePath,
             },
+            inputConfig: {
+                confirmOnEnter: config.userInputConfirmOnEnter,
+                cancelOnEscape: config.userInputCancelOnEscape,
+            }
         };
         panel.webview.html = getWebviewContent(templateName, userInputRequest, resolveUri);
         panel.webview.onDidReceiveMessage(response => {

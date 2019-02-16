@@ -9,6 +9,8 @@ const defaultIgnore: string[] = [];
 const defaultEncoding = filesConfig.get('encoding', 'utf8');
 const defaultVariableLeftBoundary = '{_';
 const defaultVariableRightBoundary = '_}';
+const defaultUserInputConfirmOnEnter = false;
+const defaultUserInputCancelOnEscape = false;
 
 const config = {
     getPluginConfiguration(field: string): any {
@@ -50,6 +52,14 @@ const config = {
 
     get variableRightBoundary(): string {
         return this.getPluginConfiguration('variable.rightBoundary') || defaultVariableRightBoundary;
+    },
+
+    get userInputConfirmOnEnter(): boolean {
+        return this.getPluginConfiguration('userInput.confirmOnEnter') || defaultUserInputConfirmOnEnter;
+    },
+
+    get userInputCancelOnEscape(): boolean {
+        return this.getPluginConfiguration('userInput.cancelOnEscape') || defaultUserInputCancelOnEscape;
     }
 };
 
