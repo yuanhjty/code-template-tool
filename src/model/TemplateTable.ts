@@ -78,6 +78,10 @@ export default class TemplateTable implements ITemplateTable {
         return Array.from(this._idTemplateTable.values());
     }
 
+    public size(): number {
+        return this._idTemplateTable.size;
+    }
+
     private constructor(templatesPath: string) {
         this._templatesPath = templatesPath;
     }

@@ -32,7 +32,8 @@ export default class Worker {
     }
 
     public async generateCodes(destDir: string) {
-        const template = await selectTemplate(this.templateTable);
+        const { templateTable } = this;
+        const template = templateTable.size() === 1 ? templateTable.entries()[0] : await selectTemplate(templateTable);
         if (!template) {
             return;
         }
@@ -63,9 +64,7 @@ export default class Worker {
         if (!existsSync(this._templatesPath)) {
             await mkdirp(this._templatesPath);
         } else if (!isDirectory(this._templatesPath)) {
-            throw new NotDirError(
-                '`codeTemplateTool.templatesPath` must be a directory, check your user settings.'
-            );
+            throw new NotDirError('`codeTemplateTool.templatesPath` must be a directory, check your user settings.');
         }
 
         this._templateTable = TemplateTable.getInstance(this._templatesPath);
@@ -79,10 +78,10 @@ export default class Worker {
 
     private watchTemplates() {
         const eventListeners = this._templatesEventListeners;
-        eventListeners.push(workspace.onDidChangeConfiguration(this.onDidChangeTemplateConfig));
+        eventListeners.push(workspace.onDidChangeConfiguration(this.onDidChangeTemplateConfig.bind(this)));
     }
 
-    private onDidChangeTemplateConfig = async (e: ConfigurationChangeEvent): Promise<void> => {
+    private async onDidChangeTemplateConfig (e: ConfigurationChangeEvent): Promise<void> {
         if (e.affectsConfiguration('codeTemplateTool')) {
             this.disposeTemplates();
             await this.initTemplates();

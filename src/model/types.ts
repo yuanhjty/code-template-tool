@@ -80,4 +80,5 @@ export interface ITemplateTable {
     deleteByName(templateName: string): void;
     deleteById(templateId: string): void;
     entries(): ITemplate[];
+    size(): number;
 }
