@@ -31,18 +31,23 @@ Generate files/folders based on templates.
 
   * Case style
 
-    | Case            | Example       |  
-    |-----------------|---------------|  
-    | camelCase       | myLovelyCat   |  
-    | pascalCase      | MyLovelyCat   |  
-    | snakeCase       | my_lovely_cat |  
-    | kebabCase       | my-lovely-cat |  
-    | snakeUpperCase  | MY_LOVELY_CAT |  
-    | snakePascalCase | My_Lovely_Cat |  
-    | kebabUpperCase  | MY-LOVELY-CAT |  
-    | kebabPascalCase | My-Lovely-Cat |  
-    | upperCase       | MYLOVELYCAT   |  
-    | lowerCase       | mylovelycat   |  
+    <table>
+      <thead>
+        <tr> <th>Case</th> <th>Example</th> </tr>
+      </thead>
+      <tbody>
+        <tr> <td>camelCase</td> <td><code>myLovelyCat</code></td> </tr>
+        <tr> <td>pascalCase</td> <td><code>MyLovelyCat</code></td> </tr>
+        <tr> <td>snakeCase</td> <td><code>my_lovely_cat</code></td> </tr>
+        <tr> <td>kebabCase</td> <td><code>my-lovely-cat</code></td> </tr>
+        <tr> <td>snakeUpperCase</td> <td><code>MY_LOVELY_CAT</code></td> </tr>
+        <tr> <td>snakePascalCase</td> <td><code>My_Lovely_Cat</code></td> </tr>
+        <tr> <td>kebabUpperCase</td> <td><code>MY-LOVELY-CAT</code></td> </tr>
+        <tr> <td>kebabPascalCase</td> <td><code>My-Lovely-Cat</code></td> </tr>
+        <tr> <td>upperCase</td> <td><code>MYLOVELYCAT</code></td> </tr>
+        <tr> <td>lowerCase</td> <td><code>mylovelycat</code></td> </tr>
+      </tbody>
+    </table>
 
   * Prefix and suffix
   
@@ -91,7 +96,7 @@ By default, it's `{homedir}/.vscode/templates`.
 
 #### Template structure  
 
-```js
+```plaintext
 + exampleTemplate              // template define folder
   - template.config.json       // template configuration file
   - {other files and folders}  // template content
@@ -111,7 +116,7 @@ By default, it's `{homedir}/.vscode/templates`.
 
   ---
 
-  ```js
+  ```plaintext
   // The template content is a folder and what it contains.
 
   + ___PageName___Page        // folder with variable in it's name
@@ -316,7 +321,7 @@ By default, it's `{homedir}/.vscode/templates`.
 
   ---
 
-  ```js
+  ```plaintext
   // The template content is two files and their content.
 
   - ___componentName___.js    // file with variable in it's name
@@ -394,11 +399,31 @@ The placeholders in template content will be replaced with the raw user input va
 uppercase words in user input will not be transformed to other cases,they will stay uppercase when joined with other words.
 
   __Example__
-
-  | words              | transform to | keepUpperCase is false | keepUpperCase is true |  
-  |--------------------|--------------|------------------------|-----------------------|  
-  | "XML HTTP request" | pascalCase   | `XmlHttpRequest`       | `XMLHTTPRequest`      |  
-  | "new customer ID"  | camelCase    | `newCustomerId`        | `newCustomerID`       |  
+  
+  <table>
+    <thead>
+      <tr>
+        <th>words</th>
+        <th>transform to</th>
+        <th>keepUpperCase is false</th>
+        <th>keepUpperCase is true</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>"XML HTTP request"</td>
+            <td>pascalCase</td>
+            <td><code>XmlHttpRequest</code></td>
+            <td><code>XMLHTTPRequest</code></td>
+        </tr>
+        <tr>
+            <td>"new customer ID"</td>
+            <td>camelCase</td>
+            <td><code>newCustomerId</code></td>
+            <td><code>newCustomerID</code></td>
+        </tr>
+    </tbody>
+  </table>
 
 * Common transformation process of identifier styles
 
@@ -470,7 +495,7 @@ uppercase words in user input will not be transformed to other cases,they will s
     ---
     Generated content:
 
-    ```js
+    ```plaintext
     other contentLovelyCatOther content
     other content lovelyCat Other content
     other content lovely_cat Other content
