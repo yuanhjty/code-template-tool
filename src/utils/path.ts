@@ -2,6 +2,7 @@ import { statSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { homedir } from 'os';
 import { workspace, window } from 'vscode';
+import { pipe } from './function';
 
 function parseDirPath(filePath: string | undefined): string | undefined {
     if (!filePath) {
@@ -12,7 +13,7 @@ function parseDirPath(filePath: string | undefined): string | undefined {
         const stats = statSync(filePath);
         const folderPath = stats.isDirectory() ? filePath : dirname(filePath);
         return resolve(folderPath);
-    } catch(e) {
+    } catch (e) {
         return;
     }
 }
@@ -37,10 +38,23 @@ export function getWorkspacePath(): string {
     return workspaceFolder.uri.fsPath;
 }
 
-export function getDestDirPath(...contextArgs: any[]): string{
-    return (
-        getSelectedDirPath(...contextArgs) ||
-        getCurrentDirPath() ||
-        getWorkspacePath()
-    );
+export function getDestDirPath(...contextArgs: any[]): string {
+    return getSelectedDirPath(...contextArgs) || getCurrentDirPath() || getWorkspacePath();
 }
+
+/**
+ * Resolve params in path
+ */
+export const resolveParams = function() {
+    const params = [['{home}', homedir()], ['{workspace}', getWorkspacePath()]];
+
+    function getReplacer(subStr: string, newSubStr: string): (str: string) => string {
+        return (str: string): string => str.replace(subStr, newSubStr);
+    }
+
+    const replacers = params.map(item => getReplacer(item[0], item[1]));
+
+    return function(path: string): string {
+        return pipe(...replacers)(path);
+    };
+}();

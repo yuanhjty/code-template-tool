@@ -1,6 +1,9 @@
 import { workspace } from 'vscode';
 import { resolve } from 'path';
 import { homedir } from 'os';
+import { trim } from './string';
+import { flipCurry } from './function';
+import { resolveParams } from './path';
 
 const filesConfig = workspace.getConfiguration('files', null);
 const defaultTemplatesPath = resolve(homedir(), '.vscode/templates');
@@ -12,18 +15,20 @@ const defaultVariableRightBoundary = '_}';
 const defaultUserInputConfirmOnEnter = false;
 const defaultUserInputCancelOnEscape = false;
 
+const trimSpace: (str: string) => string = flipCurry(trim)(' ');
+
 const config = {
     getPluginConfiguration(field: string): any {
         return workspace.getConfiguration('codeTemplateTool').get(field);
     },
 
     get templatesPath(): string {
-        let templatesPath =
-            <string>this.getPluginConfiguration('templatesPath') || defaultTemplatesPath;
-        if (templatesPath.slice(0, 2) === '~/') {
-            templatesPath = resolve(homedir(), templatesPath.slice(2));
+        const templatesPath = trimSpace(this.getPluginConfiguration('templatesPath'));
+        const resolvedPath = resolveParams(templatesPath);
+        if (resolvedPath.slice(0, 2) === '~/') {
+            return resolve(homedir(), templatesPath.slice(2));
         }
-        return templatesPath;
+        return resolvedPath || defaultTemplatesPath;
     },
 
     get ignore(): string[] {
@@ -31,11 +36,11 @@ const config = {
     },
 
     get configFile(): string {
-        return this.getPluginConfiguration('templateConfigFileName') || defaultConfigFile;
+        return trimSpace(this.getPluginConfiguration('configFile')) || defaultConfigFile;
     },
 
     get encoding(): string {
-        return this.getPluginConfiguration('encoding') || defaultEncoding;
+        return trimSpace(this.getPluginConfiguration('encoding')) || defaultEncoding;
     },
 
     get variableNoTransformation(): boolean {
@@ -47,11 +52,11 @@ const config = {
     },
 
     get variableLeftBoundary(): string {
-        return this.getPluginConfiguration('variable.leftBoundary') || defaultVariableLeftBoundary;
+        return trimSpace(this.getPluginConfiguration('variable.leftBoundary')) || defaultVariableLeftBoundary;
     },
 
     get variableRightBoundary(): string {
-        return this.getPluginConfiguration('variable.rightBoundary') || defaultVariableRightBoundary;
+        return trimSpace(this.getPluginConfiguration('variable.rightBoundary')) || defaultVariableRightBoundary;
     },
 
     get userInputConfirmOnEnter(): boolean {
@@ -60,7 +65,7 @@ const config = {
 
     get userInputCancelOnEscape(): boolean {
         return this.getPluginConfiguration('userInput.cancelOnEscape') || defaultUserInputCancelOnEscape;
-    }
+    },
 };
 
 export default config;
