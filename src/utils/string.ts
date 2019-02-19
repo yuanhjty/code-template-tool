@@ -81,3 +81,13 @@ export const words = (function() {
     const wordPattern = /[a-z\d]+|[A-Z]\d*[a-z][a-z\d]*|[A-Z][A-Z\d]*(?=[A-Z]\d*[a-z][a-z\d]*|[^a-zA-Z\d]|$)/g;
     return (str: string): string[] => str.match(wordPattern) || [];
 })();
+
+export function compare(str1: string, str2: string): 0 | -1 | 1 {
+    if (str1 < str2) {
+        return -1;
+    }
+    if (str1 > str2) {
+        return 1;
+    }
+    return 0;
+}

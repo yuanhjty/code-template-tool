@@ -12,6 +12,7 @@ import {
     trim,
     escapeRegExpSpecialChars,
     words,
+    compare,
 } from '../../utils/string';
 
 /* tslint:disable:no-unused-expression */
@@ -84,16 +85,15 @@ describe('String Utils Tests', function() {
     });
 
     describe('escapeRegExpSpecialChars', function() {
-        const testCases = [
+        const testCases: [string, string][] = [
             [
                 'Aa1~!@#%&=_:;\'"<>,-^$.*?+|/\\[](){}',
                 'Aa1~!@#%&=_:;\'"<>,-\\^\\$\\.\\*\\?\\+\\|\\/\\\\\\[\\]\\(\\)\\{\\}',
             ],
         ];
 
-        testCases.forEach((item: (string | string[])[]) => {
-            const input = <string>item[0];
-            const output = <string>item[1];
+        testCases.forEach((item: [string, string]) => {
+            const [input, output] = item;
             it(`escapeRegExpSpecialChars('${input}') should return ${JSON.stringify(output)}`, function() {
                 assert.strictEqual(escapeRegExpSpecialChars(input), output);
             });
@@ -101,7 +101,7 @@ describe('String Utils Tests', function() {
     });
 
     describe('words', function() {
-        const testCases = [
+        const testCases: [string, string[]][] = [
             ['lowercase', ['lowercase']],
             ['UPPERCASE', ['UPPERCASE']],
             ['camelCaseIdentifier', ['camel', 'Case', 'Identifier']],
@@ -124,11 +124,25 @@ describe('String Utils Tests', function() {
             ['hyphen-underscore_space ', ['hyphen', 'underscore', 'space']],
         ];
 
-        testCases.forEach((item: (string | string[])[]) => {
-            const input = <string>item[0];
-            const output = <string[]>item[1];
+        testCases.forEach((item: [string, string[]]) => {
+            const [input, output] = item;
             it(`words('${input}') should return ${JSON.stringify(output)}`, function() {
                 assert.deepStrictEqual(words(input), output);
+            });
+        });
+    });
+
+    describe(compare.name, function() {
+        const testCases: [string, string, number][] = [
+            ['abcd', 'abcd', 0],
+            ['abcd', 'abdd', -1],
+            ['abcd', 'abbd', 1],
+        ];
+
+        testCases.forEach((item: [string, string, number]) => {
+            const [p1, p2, r] = item;
+            it(`${compare.name}('${p1}', '${p2}) should return ${r}`, function() {
+                assert.strictEqual(compare(p1, p2), r);
             });
         });
     });

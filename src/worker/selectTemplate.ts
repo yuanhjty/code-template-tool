@@ -1,11 +1,10 @@
 import { window } from 'vscode';
 import { ITemplate, ITemplateTable } from '../model/types';
 import { showInfoMsg } from '../utils/message';
+import { compare } from '../utils/string';
 
-export default async function selectTemplate(
-    templateTable: ITemplateTable
-): Promise<ITemplate | undefined> {
-    const templates = templateTable.entries();
+export default async function selectTemplate(templateTable: ITemplateTable): Promise<ITemplate | undefined> {
+    const templates = templateTable.entries().sort((a, b) => compare(a.name, b.name));
     const templateNames = templates.map(template => template.name);
 
     if (templateNames.length === 0) {
