@@ -398,7 +398,9 @@ By default, it's `{homedir}/.vscode/templates`.
 
 #### Variable rules
 
-* A variable in template content is prefixed and suffixed with three underscores to distinguish from non variable content.
+* A variable in template content has a left boundary and a right boundary to distinguish from non variable content. By default, variables' left boundary and right boundary are both `___`(three underscores).
+
+  The boundary can be customized by setting the fields __`codeTemplateTool.variable.leftBoundary`__ and __`codeTemplateTool.variable.rightBoundary`__ in user settings.
 
 * Take `myPet` as an example of variable name, in template configuration files, you can use any of
   `myPet, MyPet, my_pet, my-pet, My_Pet, MY_PET, My-Pet, MY-PET`
@@ -407,6 +409,16 @@ By default, it's `{homedir}/.vscode/templates`.
    in corresponding template content.
 
   Actually, `myPet, MyPet, my_pet, my-pet, My_Pet, MY_PET, My-Pet, MY-PET` can be clearly separated into the same case ignore string list `["my", "pet"]`, so they are treated as the same variable with different styles.
+
+* Valid character sets for variables:
+
+  * For variables' name: `a-zA-Z0-9`
+
+  * For variable's value:
+
+    * If __`style.noTransformation`__ is `true`: `a-zA-Z0-9`
+
+    * Else: any characters
 
 * If __`style.noTransformation`__ is `true`,
 The placeholders in template content will be replaced with the raw user input value.
@@ -700,3 +712,9 @@ uppercase words in user input will not be transformed to other cases,they will s
 * Focus on buttons by tab key and trigger by enter key.
 
 * New user settings: `codeTemplateTool.userInput.confirmOnEnter`, `codeTemplateTool.userInput.cancelOnEscape`
+
+### 0.5.1
+
+* Fix the issue that template list has no fixed sort.
+
+* Update docs.
