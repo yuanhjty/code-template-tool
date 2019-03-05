@@ -2,36 +2,13 @@
 
 Generate files/folders based on templates.
 
-## What's new in 0.5.0
+## What's new in 0.6.0
 
-* Support two variables for the user settings field `templatesPath`: `{home}` and `{workspace}`.
+* Add the filed `allowExistingFolder` to template config.
 
-  * `{home}`: User home directory.
-  * `{workspace}`: Your workspace directory. That is the directory currently open in your vscode instance.
-    If no directory is open currently, `{workspace}` will be resolved as user home directory.
-  
-  Example:
+  If `allowExistingFolder` is set to `true`, when trying to create a directory that is already existing, the existing directory will just be used.
 
-  ```plaintext
-  Your home dir: /users/superman
-  Your current workspace: /users/superman/path/to/project
-
-  {home}/.vscode/templates -> /users/superman/.vscode/templates
-  
-  {workspace}/templates -> /users/superman/path/to/project/templates
-  ```
-
-* Skip select step when there is only one template.
-
-* Autofocus on variable input box.
-
-* User settings
-  
-  * `codeTemplateTool.userInput.confirmOnEnter`: If set to `true`, you can press `Enter` key to confirm creation.
-  
-  * `codeTemplateTool.userInput.cancelOnEscape`: If set to `true`, you can press `ESC` key to cancel creation.
-
-* Focus on buttons by tab key and trigger by enter key.
+  If set to `false` or not configured, when trying to create a existing directory, a `FileAlreadyExistsError` will be thrown.
 
 ## Features
 
@@ -68,6 +45,12 @@ Generate files/folders based on templates.
   * Prefix and suffix
   
     Identifiers can be prefixed or suffixed with any visible characters.
+
+  * Globally and template-level configuration of file encoding.
+
+  * Globally and template-level configuration of ignore list (glob pattern).
+
+  * Template-level configuration of processing mode for already existing directories.
 
 ## Usage
 
@@ -363,7 +346,10 @@ By default, it's `{homedir}/.vscode/templates`.
           "{variable configuration}",
           "{variable configuration}",
           "..."
-      ]
+      ],
+      "encoding": "utf8", // string, optional
+      "ignore": ["{glob pattern}", "{glob pattern}", "..."], // array of string, optional
+      "allowExistingFolder": false, // boolean, optional
   }
   ```
 
@@ -395,6 +381,18 @@ By default, it's `{homedir}/.vscode/templates`.
         }
     }
     ```
+
+  * The `encoding` filed specifies the encoding used when reading from template files and writing to target files. 
+  
+    If not configured, the filed `codeTemplateTool.encoding` in user settings will be used. Usually, it's `utf8`.
+
+  * The `ignore` filed can be used to filter files/folders by glob patterns.
+
+    The final ignore list is the merged result of the `ignore` filed configured here and the filed `codeTemplateTool.ignore` configured in user settings.
+
+  * If the `allowExistingFolder` filed is set to `true`, when trying to create a directory that is already existing, the existing directory will just be used.
+
+    If set to `false` or not configured, when trying to create a existing directory, a `FileAlreadyExistsError` will be thrown.
 
 #### Variable rules
 
@@ -647,74 +645,6 @@ uppercase words in user input will not be transformed to other cases,they will s
 
 ## Known Issues
 
-## Release Notes
+## License
 
-### 0.1.0
-
-* Initial release.
-
-### 0.1.1
-
-* Update docs.
-
-### 0.1.2
-
-* Change variable setter's title.
-
-### 0.2.0
-
-* Refactor project structure.
-
-* Support prefix and suffix underscores.
-
-* Support uppercase words in camel case and pascal case identifiers.
-
-### 0.3.0
-
-* Refactor project structure.
-
-* Upgrade user interface.
-
-* Support modification of destination folder after select template.
-
-* Support recursive creation of folders.
-
-* Support custom configuration file name.
-
-* Support custom encoding.
-
-* Support glob pattern filter when read template file/folders.
-
-* Support custom prefix and suffix.
-
-* Support variable noTransformation globally and locally.
-
-* Support variable keepUpperCase globally and locally.
-
-* Move variable style features down to `style` field of variable configuration.
-
-* Update docs.
-
-### 0.4.0
-
-* Support customizing variable's left boundary and right boundary via the `codeTemplateTool.variable.leftBoundary` and `codeTemplateTool.variable.rightBoundary` fields in user settings.
-
-* Fix the issue that the additional underscores are replaced.
-  
-### 0.5.0
-
-* Support variables for the user settings field `templatesPath`: `{home}`, `{workspace}`.
-
-* Skip select step when there is only one template.
-
-* Autofocus on variable input box.
-
-* Focus on buttons by tab key and trigger by enter key.
-
-* New user settings: `codeTemplateTool.userInput.confirmOnEnter`, `codeTemplateTool.userInput.cancelOnEscape`
-
-### 0.5.1
-
-* Fix the issue that template list has no fixed sort.
-
-* Update docs.
+MIT
