@@ -69,6 +69,10 @@ export default class Template implements ITemplate {
         return this._ignore;
     }
 
+    public get allowExistingFolder(): boolean {
+        return this._allowExistingFolder;
+    }
+
     public get variableTable(): IVariableTable {
         return this._variableTable;
     }
@@ -83,6 +87,7 @@ export default class Template implements ITemplate {
         this._rootPath = templatePath;
         this._encoding = configDTO.encoding || config.encoding;
         this._ignore = configDTO.ignore || [];
+        this._allowExistingFolder = configDTO.allowExistingFolder || false;
         this._variableTable = this.buildVariableTable(configDTO.variables || []);
         this._initialVariableTable = this.buildVariableTable(configDTO.variables || []);
     }
@@ -104,6 +109,7 @@ export default class Template implements ITemplate {
     private _rootPath: string;
     private _encoding: string;
     private _ignore: string[];
+    private _allowExistingFolder: boolean;
     private _variableTable: IVariableTable;
     private _initialVariableTable: IVariableTable;
 }

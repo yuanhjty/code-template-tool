@@ -35,12 +35,15 @@ export default class CodesGenerator {
     }
 
     private async generate(srcPath: string, destPath: string) {
-        if (existsSync(destPath)) {
+        const exist = existsSync(destPath)
+        if(exist && !this._template.allowExistingFolder) {
             throw new FileAlreadyExistsError(destPath);
         }
 
         if (statSync(srcPath).isDirectory()) {
-            await mkdirp(destPath);
+            if(!exist) {
+                await mkdirp(destPath);
+            }
             const srcBaseNames = await this.globDir(srcPath);
             await Promise.all(
                 srcBaseNames.map((srcBaseName: string) => {
@@ -55,6 +58,9 @@ export default class CodesGenerator {
                 })
             );
         } else {
+            if(exist) {
+                throw new FileAlreadyExistsError(destPath);
+            }
             await this.generateFile(srcPath, destPath);
         }
     }

@@ -22,6 +22,7 @@ export interface ITemplateConfigDTO {
     variables?: (IVariableConfigDTO | string)[];
     encoding?: string;
     ignore?: string[];
+    allowExistingFolder?: boolean;
 }
 
 export interface IVariableValueDTO {
@@ -68,6 +69,7 @@ export interface ITemplate {
     name: string;
     encoding: string;
     ignore: string[];
+    allowExistingFolder: boolean;
     rootPath: string;
     variableTable: IVariableTable;
 }
