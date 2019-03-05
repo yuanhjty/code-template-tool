@@ -36,6 +36,9 @@ export default class CodesGenerator {
 
     private async generate(srcPath: string, destPath: string) {
         const exist = existsSync(destPath)
+        if(exist && !this._template.allowExistingFolder) {
+            throw new FileAlreadyExistsError(destPath);
+        }
 
         if (statSync(srcPath).isDirectory()) {
             if(!exist) {
