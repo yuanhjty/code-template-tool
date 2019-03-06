@@ -2,11 +2,17 @@
 
 ## [Unreleased]
 
+## [0.6.1] - 2019-03-06
+
+### fixed
+
+- Fix docs typo.
+
 ## [0.6.0] - 2019-03-06
 
 ### Added
 
-- Template config filed: `allowExistingFolder`
+- Template config filed: `allowExistingFolder`.
 
 ## [0.5.1]
 
