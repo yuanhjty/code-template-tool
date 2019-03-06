@@ -3,7 +3,7 @@
     "displayName": "Code Template Tool",
     "description": "Generate code based on the template",
     "icon": "resource/img/icon.png",
-    "version": "0.6.0",
+    "version": "0.6.1",
     "publisher": "yuanhjty",
     "license": "MIT",
     "keywords": [

@@ -46,11 +46,11 @@ Generate files/folders based on templates.
   
     Identifiers can be prefixed or suffixed with any visible characters.
 
-  * Globally and template-level configuration of file encoding.
+* Globally and template-level configuration of file encoding.
 
-  * Globally and template-level configuration of ignore list (glob pattern).
+* Globally and template-level configuration of file ignorance list (glob pattern).
 
-  * Template-level configuration of processing mode for already existing directories.
+* Template-level configuration of processing mode for already existing directories.
 
 ## Usage
 
