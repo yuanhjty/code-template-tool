@@ -1,6 +1,6 @@
-import { workspace } from 'vscode';
 import { resolve } from 'path';
 import { homedir } from 'os';
+import { workspace } from 'vscode';
 import { trim } from './string';
 import { flipCurry } from './function';
 import { resolveParams } from './path';
@@ -18,54 +18,63 @@ const defaultUserInputCancelOnEscape = false;
 const trimSpace: (str: string) => string = flipCurry(trim)(' ');
 
 const config = {
-    getPluginConfiguration(field: string): any {
-        return workspace.getConfiguration('codeTemplateTool').get(field);
-    },
+  getPluginConfiguration(field: string): any {
+    return workspace.getConfiguration('codeTemplateTool').get(field);
+  },
 
-    get templatesPath(): string {
-        const templatesPath = trimSpace(this.getPluginConfiguration('templatesPath'));
-        const resolvedPath = resolveParams(templatesPath);
-        if (resolvedPath.slice(0, 2) === '~/') {
-            return resolve(homedir(), templatesPath.slice(2));
-        }
-        return resolvedPath || defaultTemplatesPath;
-    },
+  get templatesPath(): string {
+    const templatesPath = trimSpace(this.getPluginConfiguration('templatesPath'));
+    const resolvedPath = resolveParams(templatesPath);
+    if (resolvedPath.slice(0, 2) === '~/') {
+      return resolve(homedir(), templatesPath.slice(2));
+    }
+    return resolvedPath || defaultTemplatesPath;
+  },
 
-    get ignore(): string[] {
-        return this.getPluginConfiguration('ignore') || defaultIgnore;
-    },
+  get ignore(): string[] {
+    return this.getPluginConfiguration('ignore') || defaultIgnore;
+  },
 
-    get configFile(): string {
-        return trimSpace(this.getPluginConfiguration('configFile')) || defaultConfigFile;
-    },
+  get configFile(): string {
+    return trimSpace(this.getPluginConfiguration('configFile')) || defaultConfigFile;
+  },
 
-    get encoding(): string {
-        return trimSpace(this.getPluginConfiguration('encoding')) || defaultEncoding;
-    },
+  get encoding(): string {
+    return trimSpace(this.getPluginConfiguration('encoding')) || defaultEncoding;
+  },
 
-    get variableNoTransformation(): boolean {
-        return this.getPluginConfiguration('variable.noTransformation');
-    },
+  get variableNoTransformation(): boolean {
+    return this.getPluginConfiguration('variable.noTransformation');
+  },
 
-    get variableKeepUpperCase(): boolean {
-        return this.getPluginConfiguration('variable.keepUpperCase');
-    },
+  get variableKeepUpperCase(): boolean {
+    return this.getPluginConfiguration('variable.keepUpperCase');
+  },
 
-    get variableLeftBoundary(): string {
-        return trimSpace(this.getPluginConfiguration('variable.leftBoundary')) || defaultVariableLeftBoundary;
-    },
+  get variableLeftBoundary(): string {
+    return (
+      trimSpace(this.getPluginConfiguration('variable.leftBoundary')) || defaultVariableLeftBoundary
+    );
+  },
 
-    get variableRightBoundary(): string {
-        return trimSpace(this.getPluginConfiguration('variable.rightBoundary')) || defaultVariableRightBoundary;
-    },
+  get variableRightBoundary(): string {
+    return (
+      trimSpace(this.getPluginConfiguration('variable.rightBoundary')) ||
+      defaultVariableRightBoundary
+    );
+  },
 
-    get userInputConfirmOnEnter(): boolean {
-        return this.getPluginConfiguration('userInput.confirmOnEnter') || defaultUserInputConfirmOnEnter;
-    },
+  get userInputConfirmOnEnter(): boolean {
+    return (
+      this.getPluginConfiguration('userInput.confirmOnEnter') || defaultUserInputConfirmOnEnter
+    );
+  },
 
-    get userInputCancelOnEscape(): boolean {
-        return this.getPluginConfiguration('userInput.cancelOnEscape') || defaultUserInputCancelOnEscape;
-    },
+  get userInputCancelOnEscape(): boolean {
+    return (
+      this.getPluginConfiguration('userInput.cancelOnEscape') || defaultUserInputCancelOnEscape
+    );
+  },
 };
 
 export default config;
