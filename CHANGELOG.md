@@ -4,7 +4,7 @@
 
 ## [0.6.1] - 2019-03-06
 
-### fixed
+### Fixed
 
 - Fix docs typo.
 
@@ -16,7 +16,7 @@
 
 ## [0.5.1]
 
-### Fix
+### Fixed
 
 - Fix the issue that template list has no fixed sort.
 - Update docs.
