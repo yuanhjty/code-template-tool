@@ -84,23 +84,29 @@ export default class CodesGenerator {
   private resolveVariable(content: string, variableTable: IVariableTable): string {
     const varLeft = config.variableLeftBoundary;
     const varRight = config.variableRightBoundary;
+    const varStyle = config.variableStyleBoundary;
+    const varStylePatternStr = escapeRegExpSpecialChars(varStyle);
     let pattern;
     if (varLeft === '___' && varRight === '___') {
-      pattern = /___([a-zA-Z\d-]|[a-zA-Z][_a-zA-Z\d-]*[a-zA-Z\d-])___/g;
+      pattern = new RegExp(`___([a-zA-Z\d-${varStylePatternStr}]|[a-zA-Z][_a-zA-Z\d-${varStylePatternStr}]*[a-zA-Z\d-${varStylePatternStr}])___`, "g");
     } else {
       const varLeftPatternStr = escapeRegExpSpecialChars(varLeft);
       const varRightPatternStr = escapeRegExpSpecialChars(varRight);
-      const patternStr = `${varLeftPatternStr}[_a-zA-Z\\d\\-]+${varRightPatternStr}`;
+      const patternStr = `${varLeftPatternStr}[_a-zA-Z\\d\\-${varStylePatternStr}]+${varRightPatternStr}`;
       pattern = new RegExp(patternStr, 'g');
     }
 
     return content.replace(pattern, (m: string) => {
       const key = trimStart(trimEnd(m, varRight), varLeft);
-      const variable = variableTable.get(key);
+      const keyStyle = key.split(varStyle);
+      const variable = variableTable.get(keyStyle[0]);
       if (!variable || !variable.value) {
         return m;
       }
-      return convertIdentifierStyle(variable.value, variable.style, key);
+      var style = variable.style;
+      if (keyStyle.length > 1)
+        style.case = keyStyle[1];
+      return convertIdentifierStyle(variable.value, style, key);
     });
   }
 }

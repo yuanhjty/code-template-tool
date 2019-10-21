@@ -120,6 +120,11 @@
           "default": "___",
           "description": "The default value is for compatibility. If using variable in file names, the boundary token should not be reserved characters of your operating system. Examples: `_}`, `}}`, `%}`"
         },
+        "codeTemplateTool.variable.styleBoundary": {
+          "type": "string",
+          "default": ":",
+          "description": "The style boundary in the template, eg: {{name:caseStyle}}"
+        },
         "codeTemplateTool.userInput.confirmOnEnter": {
           "type": "boolean",
           "default": false,

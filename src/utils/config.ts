@@ -12,6 +12,7 @@ const defaultIgnore: string[] = [];
 const defaultEncoding = filesConfig.get('encoding', 'utf8');
 const defaultVariableLeftBoundary = '{_';
 const defaultVariableRightBoundary = '_}';
+const defaultVariableStyleBoundary = ':';
 const defaultUserInputConfirmOnEnter = false;
 const defaultUserInputCancelOnEscape = false;
 
@@ -61,6 +62,13 @@ const config = {
     return (
       trimSpace(this.getPluginConfiguration('variable.rightBoundary')) ||
       defaultVariableRightBoundary
+    );
+  },
+
+  get variableStyleBoundary(): string {
+    return (
+      trimSpace(this.getPluginConfiguration('variable.styleBoundary')) ||
+      defaultVariableStyleBoundary
     );
   },
 
