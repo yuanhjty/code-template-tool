@@ -1,0 +1,32 @@
+{
+  "name": "Operations With Tests",
+  "variables": [
+    {
+      "name": "className",
+      "style": {
+        "case": "auto"
+      }
+    },
+    {
+      "name": "interfaces",
+      "style": {
+        "noTransformation": true
+      },
+      "subTemplates": [
+        {
+          "file": "plain.js",
+          "as": "interfaceList",
+          "variableAlias": "item",
+          "joinChars": ","
+        },
+        {
+          "file": "objectStub.js",
+          "as": "interfaceStubs",
+          "variableAlias": "item",
+          "joinChars": ","
+        }
+      ]
+    }
+  ],
+  "allowExistingFolder": true
+}
