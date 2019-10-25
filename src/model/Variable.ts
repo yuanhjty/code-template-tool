@@ -1,7 +1,12 @@
 import config from '../utils/config';
 import { duplicate } from '../utils/string';
 import { AUTO, toCamelCase } from '../utils/identifier';
-import { IVariable, IVariableConfigDTO, IIdentifierStyleDTO } from './types';
+import {
+  IVariable,
+  IVariableConfigDTO,
+  IIdentifierStyleDTO,
+  ISubTemplateVariableConfigDTO,
+} from './types';
 
 /**
  * A variable will be uniquely identified by it's `name` property.
@@ -15,6 +20,7 @@ export default class Variable implements IVariable {
       case: variableCase = AUTO,
       prefixUnderscore = 0,
       suffixUnderscore = 0,
+      subTemplates,
     } = variableConfigDTO;
     const {
       noTransformation = void 0,
@@ -33,6 +39,12 @@ export default class Variable implements IVariable {
       prefix: prefix || duplicate('_', prefixUnderscore),
       suffix: suffix || duplicate('_', suffixUnderscore),
     };
+
+    if (subTemplates && subTemplates.length > 0) {
+      subTemplates.forEach(template => this._subTemplates.set(template.as, template));
+    }
+
+    this.getSubTemplates = this.getSubTemplates.bind(this);
   }
 
   public get name(): string {
@@ -51,6 +63,14 @@ export default class Variable implements IVariable {
     this._value = val;
   }
 
+  public get hasSubTemplates() {
+    return this._subTemplates.size > 0;
+  }
+
+  public getSubTemplates() {
+    return this._subTemplates;
+  }
+
   private normalizeName(name: string): string {
     return toCamelCase(name);
   }
@@ -58,4 +78,5 @@ export default class Variable implements IVariable {
   private _name: string;
   private _value: string | undefined;
   private _style: IIdentifierStyleDTO;
+  private _subTemplates = new Map<string, ISubTemplateVariableConfigDTO>();
 }

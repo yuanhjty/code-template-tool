@@ -70,7 +70,13 @@ export default function getUserInput(
     const vars = template.variableTable.variables();
     const userInputRequest: IUserInputRequestDTO = {
       templateName,
-      variables: vars.map(({ name, style, value }) => ({ name, style, value })),
+      variables: vars.map(({ name, style, value, getSubTemplates }) => ({
+        name,
+        style,
+        value,
+        getSubTemplates: getSubTemplates,
+        hasSubTemplates: getSubTemplates().size > 0,
+      })),
       destDir: {
         basePath: workspacePath,
         relativePath: destDirRelativePath,
