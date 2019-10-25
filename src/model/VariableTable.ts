@@ -2,8 +2,16 @@ import { toCamelCase } from '../utils/identifier';
 import { IVariableTable, IVariableValueDTO, IVariable } from './types';
 
 export default class VariableTable implements IVariableTable {
+  constructor() {
+    this.get = this.get.bind(this);
+    this.getAliases = this.getAliases.bind(this);
+  }
   public get(variableName: string): IVariable | undefined {
     return this._table.get(this.normalizeName(variableName));
+  }
+
+  public getAliases(alias: string): IVariable | undefined {
+    return this._aliases.get(this.normalizeName(alias));
   }
 
   /**
@@ -11,6 +19,11 @@ export default class VariableTable implements IVariableTable {
    * If the variable table already has the same variable, cover it with the new one.
    */
   public add(variable: IVariable): void {
+    if (variable.hasSubTemplates) {
+      variable.getSubTemplates().forEach(subTemplate => {
+        this._aliases.set(this.normalizeName(subTemplate.as), variable);
+      });
+    }
     this._table.set(this.normalizeName(variable.name), variable);
   }
 
@@ -36,4 +49,5 @@ export default class VariableTable implements IVariableTable {
   }
 
   private _table = new Map<string, IVariable>();
+  private _aliases = new Map<string, IVariable>();
 }

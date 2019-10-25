@@ -6,6 +6,13 @@ export interface IIdentifierStyleDTO {
   suffix: string;
 }
 
+export interface ISubTemplateVariableConfigDTO {
+  file: string;
+  as: string;
+  variableAlias: string;
+  joinChars: string;
+}
+
 export interface IVariableConfigDTO {
   name: string;
   defaultValue?: string;
@@ -15,6 +22,7 @@ export interface IVariableConfigDTO {
   case?: string;
   prefixUnderscore?: number;
   suffixUnderscore?: number;
+  subTemplates?: ISubTemplateVariableConfigDTO[];
 }
 
 export interface ITemplateConfigDTO {
@@ -32,6 +40,8 @@ export interface IVariableValueDTO {
 
 export interface IVariableDTO extends IVariableValueDTO {
   style: IIdentifierStyleDTO;
+  hasSubTemplates: boolean;
+  getSubTemplates: () => Map<string, ISubTemplateVariableConfigDTO>;
 }
 
 export interface IUserInputRequestDTO {
@@ -57,6 +67,7 @@ export interface IVariable extends IVariableDTO {}
 
 export interface IVariableTable {
   get(variableName: string): IVariable | undefined;
+  getAliases(alias: string): IVariable | undefined;
   add(variable: IVariable): void;
   delete(variableName: string): void;
   variables(): IVariable[];
