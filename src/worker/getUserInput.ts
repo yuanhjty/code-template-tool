@@ -54,11 +54,6 @@ export default function getUserInput(
   const destDirRelativePath = relative(workspacePath, destDir);
   const templateName = template.name;
 
-  function resolveUri(diskPath: string): Uri {
-    const diskUri = Uri.file(resolvePath(extensionContext.extensionPath, diskPath));
-    return diskUri.with({ scheme: 'vscode-resource' });
-  }
-
   return new Promise<IUserInputResponseDTO | undefined>((resolve): void => {
     const panel = window.createWebviewPanel(
       'codeTemplateVariablesSetter',
@@ -80,6 +75,10 @@ export default function getUserInput(
         cancelOnEscape: config.userInputCancelOnEscape,
       },
     };
+    const resolveUri = (diskPath: string): Uri => {
+        const diskUri = Uri.file(resolvePath(extensionContext.extensionPath, diskPath));
+        return panel.webview.asWebviewUri(diskUri);
+    }
     panel.webview.html = getWebviewContent(templateName, userInputRequest, resolveUri);
     panel.webview.onDidReceiveMessage(response => {
       panel.dispose();
