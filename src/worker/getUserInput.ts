@@ -76,9 +76,12 @@ export default function getUserInput(
       },
     };
     const resolveUri = (diskPath: string): Uri => {
-        const diskUri = Uri.file(resolvePath(extensionContext.extensionPath, diskPath));
+      const diskUri = Uri.file(resolvePath(extensionContext.extensionPath, diskPath));
+      if (panel.webview.asWebviewUri) {
         return panel.webview.asWebviewUri(diskUri);
-    }
+      }
+      return diskUri.with({ scheme: 'vscode-resource' });
+    };
     panel.webview.html = getWebviewContent(templateName, userInputRequest, resolveUri);
     panel.webview.onDidReceiveMessage(response => {
       panel.dispose();
