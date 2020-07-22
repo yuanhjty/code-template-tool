@@ -122,7 +122,7 @@ By default, it's `{homedir}/.vscode/templates`.
     - index.js                // file with fixed name
     - ___PageName___Page.js   // file with variable in it's name
     - ___pageName___Page.css
-    - ___pageName__Model.js
+    - ___pageName___Model.js
     + components              // sub folder with fixed name
   ```
 
@@ -225,7 +225,7 @@ By default, it's `{homedir}/.vscode/templates`.
               "style": {
                   "case": "auto"
               }
-          },
+          }
       ]
   }
   ```
