@@ -17,7 +17,7 @@
     "url": "https://github.com/yuanhjty/code-template-tool.git"
   },
   "engines": {
-    "vscode": "^1.30.2"
+    "vscode": "^1.47.0"
   },
   "categories": [
     "Other"
