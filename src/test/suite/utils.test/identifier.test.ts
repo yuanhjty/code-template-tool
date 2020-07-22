@@ -25,7 +25,7 @@ import {
   KEBAB_UPPER_CASE,
   KEBAB_PASCAL_CASE,
   UNKNOWN,
-} from '../../utils/identifier';
+} from '../../../utils/identifier';
 
 describe('Identifier Utils Tests', function() {
   function testCaseConverter(

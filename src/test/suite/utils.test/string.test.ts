@@ -13,7 +13,7 @@ import {
   escapeRegExpSpecialChars,
   words,
   compare,
-} from '../../utils/string';
+} from '../../../utils/string';
 
 /* tslint:disable:no-unused-expression */
 

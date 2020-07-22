@@ -137,9 +137,8 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install",
     "lint:fix": "eslint --fix --ext .js,.ts ./",
-    "test": "npm run lint:fix && npm run compile && node ./node_modules/vscode/bin/test",
+    "test": "npm run lint:fix && npm run compile && node ./out/test/runTest.js",
     "prettier": "prettier --write \"**/*.{js,ts,json}\"",
     "format": "npm run prettier && npm run lint:fix"
   },
@@ -157,6 +156,7 @@
     "eslint-config-y-base": "^3.2.0",
     "eslint-config-y-ts-base": "^2.2.0",
     "eslint-plugin-import": "^2.18.2",
+    "mocha": "^8.0.1",
     "prettier": "^1.18.2",
     "prettier-config-y-base": "^1.0.1",
     "typescript": "^3.6.3",
