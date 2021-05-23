@@ -1,5 +1,5 @@
 import { relative, resolve as resolvePath } from 'path';
-import { window, ViewColumn, ExtensionContext, Uri } from 'vscode';
+import { window, ViewColumn, ExtensionContext, Uri, Webview } from 'vscode';
 import { getWorkspacePath } from '../utils/path';
 import config from '../utils/config';
 import {
@@ -16,26 +16,32 @@ interface ResolveUri {
 const cssDiskPath = 'resource/css/index.css';
 const jsDiskPath = 'resource/js/index.js';
 
+/* eslint-disable func-names */
 function getWebviewContent(
   templateName: string,
   userInputRequest: IUserInputRequestDTO,
-  resolveUri: ResolveUri
+  resolveUri: ResolveUri,
+  webview: Webview,
+  nonce: string
 ): string {
   return `
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${
+  webview.cspSource
+}; script-src 'nonce-${nonce}';">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${templateName}</title>
-    <link rel="stylesheet" type="text/css" href=${resolveUri(cssDiskPath)}>
+    <link rel="stylesheet" type="text/css" href="${resolveUri(cssDiskPath)}">
   </head>
   <body>
     <div id="user-input-root"></div>
-    <script type="text/javascript" src=${resolveUri(jsDiskPath)}></script>
-    <script>
+    <script nonce="${nonce}" src="${resolveUri(jsDiskPath)}"></script>
+    <script nonce="${nonce}">
       (function() {
-        const { templateUserInput } = top;
+        const { templateUserInput } = window;
         templateUserInput.start.bind(templateUserInput)(
           ${JSON.stringify(userInputRequest)}
         );
@@ -43,6 +49,15 @@ function getWebviewContent(
     </script>
   </body>
 </html>`;
+}
+
+function getNonce(): string {
+  let text = '';
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < 32; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
 }
 
 export default function getUserInput(
@@ -82,7 +97,13 @@ export default function getUserInput(
       }
       return diskUri.with({ scheme: 'vscode-resource' });
     };
-    panel.webview.html = getWebviewContent(templateName, userInputRequest, resolveUri);
+    panel.webview.html = getWebviewContent(
+      templateName,
+      userInputRequest,
+      resolveUri,
+      panel.webview,
+      getNonce()
+    );
     panel.webview.onDidReceiveMessage(response => {
       panel.dispose();
       if (response === 'cancel') {

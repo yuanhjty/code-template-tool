@@ -1,9 +1,9 @@
 /* eslint-disable func-names */
 
 (function() {
-  top.vscode = acquireVsCodeApi();
+  const vscode = acquireVsCodeApi();
 
-  top.templateUserInput = {
+  window.templateUserInput = {
     data: {
       templateName: '',
       variables: [],
@@ -38,7 +38,7 @@
         }
       });
 
-      top.vscode.postMessage({
+      vscode.postMessage({
         variables,
         destDir: {
           basePath: destDirBasePath,
@@ -48,7 +48,7 @@
     },
 
     handleCancel() {
-      top.vscode.postMessage('cancel');
+      vscode.postMessage('cancel');
     },
 
     render() {
