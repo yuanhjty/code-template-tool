@@ -140,7 +140,7 @@
     "eslint-config-y-base": "^3.2.0",
     "eslint-config-y-ts-base": "^2.2.0",
     "eslint-plugin-import": "^2.18.2",
-    "mocha": "^8.0.1",
+    "mocha": "^8.4.0",
     "prettier": "^1.18.2",
     "prettier-config-y-base": "^1.0.1",
     "typescript": "^3.6.3",
